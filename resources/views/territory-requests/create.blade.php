@@ -60,7 +60,7 @@
                                 'code' => $t->code,
                                 'name' => $t->neighborhood_name,
                                 'type' => $t->type,
-                                'display' => '[' . $t->code . '] ' . $t->neighborhood_name . ($t->type === 'business' ? ' (Negocios)' : '')
+                                'display' => '[' . $t->code . '] ' . $t->neighborhood_name . ($t->city ? ' - ' . $t->city->name : '') . ($t->type === 'business' ? ' (Negocios)' : '')
                             ];
                         })->values()->toJson();
 
@@ -205,7 +205,7 @@
                                 class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white shadow-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors">
                         </div>
                         <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                            Por defecto sugerimos la fecha de hoy, pero puedes ajustarlo.
+                            Selecciona la fecha en la cual deseas entregar el territorio.
                         </p>
                     </div>
 

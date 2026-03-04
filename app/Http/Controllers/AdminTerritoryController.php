@@ -67,6 +67,12 @@ class AdminTerritoryController extends Controller
                             $aq->whereNull('completed_at')->where('assigned_at', '>=', now()->startOfMonth());
                         });
                 }
+                if (in_array('completed_last_month', $filters)) {
+                    $q->orWhere('last_completed_at', '>=', now()->subMonth())
+                        ->orWhereHas('assignments', function ($aq) {
+                            $aq->whereNull('completed_at')->where('assigned_at', '>=', now()->subMonth());
+                        });
+                }
             });
         }
 
@@ -88,7 +94,13 @@ class AdminTerritoryController extends Controller
             $query->orderByRaw('last_completed_at IS NULL DESC')
                 ->orderBy('last_completed_at', 'ASC');
         } elseif ($sort === 'date_desc') {
-            $query->orderByRaw('last_completed_at IS NULL ASC')
+            $query->withCount([
+                'assignments as is_assigned_count' => function ($q) {
+                    $q->whereNull('completed_at');
+                }
+            ])
+                ->orderBy('is_assigned_count', 'DESC')
+                ->orderByRaw('last_completed_at IS NULL ASC')
                 ->orderBy('last_completed_at', 'DESC');
         } elseif ($sort === 'status') {
             $query->withCount([

@@ -30,7 +30,7 @@ class AutocompleteAssignments extends Command
         $cutoffTime = Carbon::now()->subHours(6);
 
         $assignments = TerritoryAssignment::whereNull('completed_at')
-            ->where('assigned_at', '<=', $cutoffTime)
+            ->where('created_at', '<=', $cutoffTime)
             ->get();
 
         $count = 0;

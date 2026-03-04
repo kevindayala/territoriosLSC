@@ -33,7 +33,7 @@
         <thead>
             <tr>
                 <th class="col-terr" rowspan="2">Núm.<br>de terr.</th>
-                <th class="col-date" rowspan="2">Última fecha<br>en que se<br>completó*</th>
+                <th class="col-date" rowspan="2">Última fecha<br>en que se<br>completó</th>
                 @for($i=1; $i<=4; $i++)
                     <th colspan="2">Asignado a</th>
                 @endfor
@@ -53,38 +53,54 @@
                 @endphp
 
                 @if($chunks->isEmpty())
-                    <tr>
-                        <td class="text-center" rowspan="2" style="font-size: 13px;">{{ $territory->code }}</td>
-                        <td class="text-center" rowspan="2" style="font-size: 13px;">{{ $territory->last_completed_at?->format('d/m/Y') }}</td>
+                    <tr style="page-break-inside: avoid;">
+                        <td class="text-center" style="font-size: 13px; height: 42px;">{{ $territory->code }}</td>
+                        <td class="text-center" style="font-size: 13px;">{{ $territory->last_completed_at?->format('d/m/Y') }}</td>
                         @for($i=0; $i<4; $i++)
-                            <td colspan="2" style="height: 18px;"></td>
-                        @endfor
-                    </tr>
-                    <tr>
-                        @for($i=0; $i<4; $i++)
-                            <td style="height: 18px;"></td><td style="height: 18px;"></td>
+                            <td colspan="2" style="padding: 0; vertical-align: top;">
+                                <table style="width: 100%; border-collapse: collapse; margin: 0; border: none;">
+                                    <tr>
+                                        <td colspan="2" style="border: none; border-bottom: 1px solid black; height: 21px;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 50%; border: none; border-right: 1px solid black; height: 21px;"></td>
+                                        <td style="width: 50%; border: none; height: 21px;"></td>
+                                    </tr>
+                                </table>
+                            </td>
                         @endfor
                     </tr>
                 @else
                     @foreach($chunks as $chunk)
-                        <tr>
-                            <td class="text-center" rowspan="2" style="font-size: 13px;">{{ $territory->code }}</td>
-                            <td class="text-center" rowspan="2" style="font-size: 13px;">{{ $territory->last_completed_at?->format('d/m/Y') }}</td>
+                        <tr style="page-break-inside: avoid;">
+                            @php $chunk = $chunk->values(); @endphp
+                            <td class="text-center" style="font-size: 13px; height: 42px;">{{ $territory->code }}</td>
+                            <td class="text-center" style="font-size: 13px;">{{ $territory->last_completed_at?->format('d/m/Y') }}</td>
                             @for($i=0; $i<4; $i++)
                                 @if(isset($chunk[$i]))
-                                    <td colspan="2" class="text-center" style="height: 18px; font-size: 14px;">{{ $chunk[$i]->assignedTo->name }}</td>
+                                    <td colspan="2" style="padding: 0; vertical-align: top;">
+                                        <table style="width: 100%; border-collapse: collapse; margin: 0; border: none;">
+                                            <tr>
+                                                <td colspan="2" class="text-center" style="border: none; border-bottom: 1px solid black; height: 21px; font-size: 14px; padding: 1px;">{{ $chunk[$i]->assignedTo->name }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center" style="width: 50%; border: none; border-right: 1px solid black; height: 21px; font-size: 13px; padding: 1px;">{{ $chunk[$i]->assigned_at->format('d/m/y') }}</td>
+                                                <td class="text-center" style="width: 50%; border: none; height: 21px; font-size: 13px; padding: 1px;">{{ $chunk[$i]->completed_at?->format('d/m/y') }}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
                                 @else
-                                    <td colspan="2" style="height: 18px;"></td>
-                                @endif
-                            @endfor
-                        </tr>
-                        <tr>
-                            @for($i=0; $i<4; $i++)
-                                @if(isset($chunk[$i]))
-                                    <td class="text-center" style="height: 18px; font-size: 13px;">{{ $chunk[$i]->assigned_at->format('d/m/y') }}</td>
-                                    <td class="text-center" style="height: 18px; font-size: 13px;">{{ $chunk[$i]->completed_at?->format('d/m/y') }}</td>
-                                @else
-                                    <td style="height: 18px;"></td><td style="height: 18px;"></td>
+                                    <td colspan="2" style="padding: 0; vertical-align: top;">
+                                        <table style="width: 100%; border-collapse: collapse; margin: 0; border: none;">
+                                            <tr>
+                                                <td colspan="2" style="border: none; border-bottom: 1px solid black; height: 21px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width: 50%; border: none; border-right: 1px solid black; height: 21px;"></td>
+                                                <td style="width: 50%; border: none; height: 21px;"></td>
+                                            </tr>
+                                        </table>
+                                    </td>
                                 @endif
                             @endfor
                         </tr>

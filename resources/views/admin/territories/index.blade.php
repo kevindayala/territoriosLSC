@@ -99,11 +99,11 @@
                                         <option value="code" {{ request('sort') == 'code' ? 'selected' : '' }}>
                                             {{ __('Código') }}
                                         </option>
-                                        <option value="date_asc" {{ request('sort') == 'date_asc' ? 'selected' : '' }}>
-                                            {{ __('Más tiempo sin trabajar') }}
-                                        </option>
                                         <option value="date_desc" {{ request('sort') == 'date_desc' || !request('sort') ? 'selected' : '' }}>
                                             {{ __('Trabajados recientemente') }}
+                                        </option>
+                                        <option value="date_asc" {{ request('sort') == 'date_asc' ? 'selected' : '' }}>
+                                            {{ __('Más tiempo sin trabajar') }}
                                         </option>
                                     </select>
                                 </div>
@@ -114,27 +114,14 @@
                                         class="block text-[13px] font-bold text-[#334155] dark:text-gray-400 tracking-wide mb-3">{{ __('Filtrar por') }}</label>
                                     <div class="flex flex-col gap-3.5">
 
-                                        <div class="mb-2 w-full pr-4">
-                                            <label
-                                                class="block text-[12px] font-semibold text-[#64748b] dark:text-gray-400 mb-1.5">{{ __('Completados en:') }}</label>
-                                            <select name="filter[]" onchange="this.form.submit()"
-                                                class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-[#0f172a] dark:text-gray-200 text-[14px] focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 py-2 px-3 shadow-sm transition-colors cursor-pointer">
-                                                <option value="">{{ __('Cualquier fecha') }}</option>
-                                                <option value="completed_today" {{ in_array('completed_today', (array) request('filter')) ? 'selected' : '' }}>{{ __('Hoy') }}</option>
-                                                <option value="completed_this_week" {{ in_array('completed_this_week', (array) request('filter')) ? 'selected' : '' }}>
-                                                    {{ __('Esta semana') }}
-                                                </option>
-                                                <option value="completed_this_month" {{ in_array('completed_this_month', (array) request('filter')) ? 'selected' : '' }}>{{ __('Este mes') }}
-                                                </option>
-                                            </select>
-                                        </div>
+
 
                                         <label class="group flex items-center gap-3 cursor-pointer w-max">
                                             <input type="checkbox" name="filter[]" value="recommended"
                                                 onchange="this.form.submit()" {{ in_array('recommended', (array) request('filter')) ? 'checked' : '' }}
                                                 class="w-[18px] h-[18px] rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500/30 dark:bg-gray-800 transition-colors cursor-pointer bg-white shadow-sm">
                                             <span class="text-[15px] text-[#0f172a] dark:text-gray-200 select-none">
-                                                {{ __('Ver sugeridos') }}
+                                                {{ __('Territorios sugeridos') }}
                                             </span>
                                         </label>
 
@@ -143,7 +130,7 @@
                                                 onchange="this.form.submit()" {{ in_array('assigned', (array) request('filter')) ? 'checked' : '' }}
                                                 class="w-[18px] h-[18px] rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500/30 dark:bg-gray-800 transition-colors cursor-pointer bg-white shadow-sm">
                                             <span class="text-[15px] text-[#0f172a] dark:text-gray-200 select-none">
-                                                {{ __('Ver asignados') }}
+                                                {{ __('Territorios asignados') }}
                                             </span>
                                         </label>
 
@@ -152,7 +139,16 @@
                                                 onchange="this.form.submit()" {{ in_array('available', (array) request('filter')) ? 'checked' : '' }}
                                                 class="w-[18px] h-[18px] rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500/30 dark:bg-gray-800 transition-colors cursor-pointer bg-white shadow-sm">
                                             <span class="text-[15px] text-[#0f172a] dark:text-gray-200 select-none">
-                                                {{ __('Ver disponibles') }}
+                                                {{ __('Territorios disponibles') }}
+                                            </span>
+                                        </label>
+
+                                        <label class="group flex items-center gap-3 cursor-pointer w-max">
+                                            <input type="checkbox" name="filter[]" value="completed_last_month"
+                                                onchange="this.form.submit()" {{ in_array('completed_last_month', (array) request('filter')) ? 'checked' : '' }}
+                                                class="w-[18px] h-[18px] rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500/30 dark:bg-gray-800 transition-colors cursor-pointer bg-white shadow-sm">
+                                            <span class="text-[15px] text-[#0f172a] dark:text-gray-200 select-none">
+                                                {{ __('Realizados en el último mes') }}
                                             </span>
                                         </label>
 
@@ -213,6 +209,7 @@
                                     @php
                                         $activeAssignment = $territory->assignments->whereNull('completed_at')->first();
                                         $isAssigned = !is_null($activeAssignment);
+                                        $lastCompletedAssignment = $territory->assignments->whereNotNull('completed_at')->sortByDesc('completed_at')->first();
                                     @endphp
                                     <div
                                         class="inline-flex items-center px-2 py-0.5 rounded-full {{ $isAssigned ? 'bg-red-50 dark:bg-red-900/20' : 'bg-green-50 dark:bg-green-900/20' }} border {{ $isAssigned ? 'border-red-100 dark:border-red-800' : 'border-green-100 dark:border-green-800' }}">
@@ -230,6 +227,13 @@
                                         @if ($activeAssignment->type === 'personal')
                                             <span
                                                 class="text-[8px] bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 px-1.5 rounded border border-amber-200 dark:border-amber-800/50 mt-1 font-black uppercase">PERSONAL</span>
+                                        @endif
+                                    @elseif (isset($lastCompletedAssignment) && $lastCompletedAssignment->assignedTo)
+                                        <span
+                                            class="text-[9px] text-gray-400 dark:text-gray-500 font-semibold uppercase mt-1.5 tracking-tighter">{{ $lastCompletedAssignment->assignedTo->name }}</span>
+                                        @if ($lastCompletedAssignment->type === 'personal')
+                                            <span
+                                                class="text-[8px] bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-500/70 px-1.5 rounded border border-amber-100 dark:border-amber-900/40 mt-1 font-black uppercase opacity-80">PERSONAL</span>
                                         @endif
                                     @endif
                                 </div>
@@ -327,6 +331,7 @@
                                     @php
                                         $activeAssignment = $territory->assignments->whereNull('completed_at')->first();
                                         $isAssigned = !is_null($activeAssignment);
+                                        $lastCompletedAssignment = $territory->assignments->whereNotNull('completed_at')->sortByDesc('completed_at')->first();
                                         $monthsSince = $territory->last_completed_at ? (int) $territory->last_completed_at->diffInMonths(now()) : null;
                                         $dateColorClass = 'text-gray-500 dark:text-gray-400';
 
@@ -350,6 +355,15 @@
                                             @if ($activeAssignment->type === 'personal')
                                                 <span
                                                     class="ml-1 text-[8px] text-amber-600 dark:text-amber-500 font-black">(Personal)</span>
+                                            @endif
+                                        </div>
+                                    @elseif (isset($lastCompletedAssignment) && $lastCompletedAssignment->assignedTo)
+                                        <div
+                                            class="mt-1 text-[10px] text-gray-400 dark:text-gray-500 font-semibold uppercase tracking-tight">
+                                            {{ $lastCompletedAssignment->assignedTo->name }}
+                                            @if ($lastCompletedAssignment->type === 'personal')
+                                                <span
+                                                    class="ml-1 text-[8px] text-amber-600/70 dark:text-amber-500/70 font-black">(Personal)</span>
                                             @endif
                                         </div>
                                     @endif

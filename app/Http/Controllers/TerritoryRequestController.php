@@ -8,7 +8,7 @@ class TerritoryRequestController extends Controller
 {
     public function create()
     {
-        $territories = \App\Models\Territory::where('status', 'active')
+        $territories = \App\Models\Territory::with('city')->where('status', 'active')
             ->orderByRaw('LENGTH(code) ASC')
             ->orderBy('code', 'asc')
             ->get();
