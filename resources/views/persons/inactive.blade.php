@@ -25,7 +25,7 @@
                             <option value="">Todas las Ciudades</option>
                             @foreach ($cities as $city)
                                 <option value="{{ $city->id }}" {{ request('city_id') == $city->id ? 'selected' : '' }}>
-                                    {{ $city->name }}
+                                    {{ $city->display_name }}
                                 </option>
                             @endforeach
                         </select>

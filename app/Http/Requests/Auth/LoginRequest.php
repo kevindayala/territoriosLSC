@@ -41,7 +41,16 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        if (!Auth::attempt(array_merge($this->only('email', 'password'), ['is_active' => true]), $this->boolean('remember'))) {
+            // Verificamos si el usuario existe pero está inactivo
+            $user = \App\Models\User::where('email', $this->email)->whereNull('deleted_at')->first();
+
+            if ($user && !$user->is_active) {
+                throw ValidationException::withMessages([
+                    'email' => __('Su cuenta ha sido desactivada. Por favor, contacte al administrador.'),
+                ]);
+            }
+
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -59,7 +68,7 @@ class LoginRequest extends FormRequest
      */
     public function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (!RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }
 
@@ -80,6 +89,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('email')) . '|' . $this->ip());
     }
 }

@@ -18,9 +18,10 @@ class InactivePersonController extends Controller
             $query->where('full_name', 'like', '%' . $request->search . '%');
         }
 
-        if ($request->filled('city_id')) {
-            $query->whereHas('territory', function ($q) use ($request) {
-                $q->where('city_id', $request->city_id);
+        if ($request->filled('city_id') && $request->city_id !== 'todas') {
+            $cityIds = \App\Models\City::where('id', $request->city_id)->orWhere('parent_id', $request->city_id)->pluck('id');
+            $query->whereHas('territory', function ($q) use ($cityIds) {
+                $q->whereIn('city_id', $cityIds);
             });
         }
 
@@ -30,7 +31,7 @@ class InactivePersonController extends Controller
 
         $persons = $query->with(['territory.city'])->latest()->paginate(10);
         $territories = Territory::all();
-        $cities = City::all();
+        $cities = City::hierarchical()->get();
 
         return view('persons.inactive', compact('persons', 'territories', 'cities'));
     }

@@ -22,7 +22,7 @@
                                 <option value="">Seleccione una ciudad</option>
                                 @foreach($cities as $city)
                                     <option value="{{ $city->id }}" {{ old('city_id', $neighborhood->city_id) == $city->id ? 'selected' : '' }}>
-                                        {{ $city->name }}
+                                        {{ $city->display_name }}
                                     </option>
                                 @endforeach
                             </select>

@@ -19,6 +19,9 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
+        if (\App\Models\Setting::get('public_registration', 'true') !== 'true') {
+            abort(403, 'El registro público está deshabilitado.');
+        }
         return view('auth.register');
     }
 
@@ -29,9 +32,12 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        if (\App\Models\Setting::get('public_registration', 'true') !== 'true') {
+            abort(403, 'El registro público está deshabilitado.');
+        }
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -39,12 +45,14 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'is_active' => false,
         ]);
+
+        $user->assignRole('Publicador');
 
         event(new Registered($user));
 
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
+        return redirect(route('login', absolute: false))
+            ->with('status', 'Registro exitoso. Tu cuenta debe ser habilitada por un administrador antes de poder iniciar sesión.');
     }
 }

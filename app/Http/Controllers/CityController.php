@@ -9,18 +9,21 @@ class CityController extends Controller
 {
     public function index()
     {
-        $cities = City::withCount(['territories'])->get();
+        // Load parent relationship and count territories, applying hierarchical sorting
+        $cities = City::hierarchical()->with(['parent'])->withCount(['territories'])->get();
         return view('cities.index', compact('cities'));
     }
 
     public function create()
     {
-        return view('cities.create');
+        $parentCities = City::whereNull('parent_id')->get();
+        return view('cities.create', compact('parentCities'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'parent_id' => 'nullable|exists:cities,id',
             'name' => 'required|string|max:255',
             'is_active' => 'boolean',
         ]);
@@ -34,12 +37,14 @@ class CityController extends Controller
 
     public function edit(City $city)
     {
-        return view('cities.edit', compact('city'));
+        $parentCities = City::whereNull('parent_id')->where('id', '!=', $city->id)->get();
+        return view('cities.edit', compact('city', 'parentCities'));
     }
 
     public function update(Request $request, City $city)
     {
         $validated = $request->validate([
+            'parent_id' => 'nullable|exists:cities,id',
             'name' => 'required|string|max:255',
             'is_active' => 'boolean',
         ]);

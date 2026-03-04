@@ -1,4 +1,5 @@
 <x-app-layout>
+    <x-slot name="title">Crear Usuario</x-slot>
     <x-slot name="logo_url">{{ route('users.index') }}</x-slot>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
@@ -10,7 +11,8 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <form action="{{ route('users.store') }}" method="POST">
+                    <form action="{{ route('users.store') }}" method="POST" x-data="{ isSubmitting: false }"
+                        x-on:submit="if(isSubmitting) { $event.preventDefault(); return; } isSubmitting = true;">
                         @csrf
 
                         <div class="grid grid-cols-1 gap-6">
@@ -75,7 +77,9 @@
 
                             <div class="flex items-center gap-4">
                                 <button type="submit"
-                                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                    x-bind:disabled="isSubmitting"
+                                    x-bind:class="{ 'opacity-50 cursor-not-allowed': isSubmitting }">
                                     Guardar
                                 </button>
                                 <a href="{{ route('users.index') }}"

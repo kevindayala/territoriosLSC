@@ -21,5 +21,9 @@
     "Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.": "¿Olvidaste tu contraseña? No hay problema. Solo dinos tu dirección de correo electrónico y te enviaremos un enlace de restablecimiento de contraseña que te permitirá elegir una nueva.",
     "Email Password Reset Link": "Enviar enlace de restablecimiento",
     "Reset Password": "Restablecer contraseña",
-    "Back to login": "Volver al inicio de sesión"
+    "Back to login": "Volver al inicio de sesión",
+    "Showing": "Mostrando",
+    "to": "a",
+    "of": "de",
+    "results": "resultados"
 }

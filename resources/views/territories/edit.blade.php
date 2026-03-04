@@ -34,7 +34,7 @@
                                 class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                 <option value="">Seleccione una ciudad</option>
                                 @foreach($cities as $city)
-                                    <option value="{{ $city->id }}" {{ old('city_id', $territory->city_id) == $city->id ? 'selected' : '' }}>{{ $city->name }}</option>
+                                    <option value="{{ $city->id }}" {{ old('city_id', $territory->city_id) == $city->id ? 'selected' : '' }}>{{ $city->display_name }}</option>
                                 @endforeach
                             </select>
                             @error('city_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror

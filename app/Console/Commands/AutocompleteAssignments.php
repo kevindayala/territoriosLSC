@@ -20,14 +20,14 @@ class AutocompleteAssignments extends Command
      *
      * @var string
      */
-    protected $description = 'Mark assignments as completed if they are older than 8 hours';
+    protected $description = 'Mark assignments as completed if they are older than 6 hours';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $cutoffTime = Carbon::now()->subHours(8);
+        $cutoffTime = Carbon::now()->subHours(6);
 
         $assignments = TerritoryAssignment::whereNull('completed_at')
             ->where('assigned_at', '<=', $cutoffTime)

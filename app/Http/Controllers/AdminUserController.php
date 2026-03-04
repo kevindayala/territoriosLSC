@@ -18,6 +18,14 @@ class AdminUserController extends Controller
     {
         $query = User::with('roles');
 
+        if ($request->filter === 'trashed') {
+            $query->onlyTrashed();
+        } elseif ($request->filter === 'active') {
+            $query->where('is_active', true);
+        } elseif ($request->filter === 'inactive') {
+            $query->where('is_active', false);
+        }
+
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -61,6 +69,7 @@ class AdminUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make(\Illuminate\Support\Str::random(16)), // Random password
+            'is_active' => true,
         ]);
 
         $user->assignRole($request->role);
@@ -97,11 +106,13 @@ class AdminUserController extends Controller
             ],
             'role' => ['required', 'exists:roles,name'],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
+            'is_active' => ['required', 'boolean'],
         ]);
 
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
+            'is_active' => $request->is_active,
         ]);
 
         if ($request->filled('password')) {
@@ -143,5 +154,16 @@ class AdminUserController extends Controller
         $user->delete();
 
         return redirect()->route('users.index')->with('success', 'Usuario eliminado exitosamente.');
+    }
+
+    /**
+     * Restore the specified soft-deleted resource.
+     */
+    public function restore($id)
+    {
+        $user = User::onlyTrashed()->findOrFail($id);
+        $user->restore();
+
+        return redirect()->back()->with('success', 'Usuario restaurado exitosamente.');
     }
 }

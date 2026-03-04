@@ -1,4 +1,5 @@
 <x-app-layout>
+    <x-slot name="title">Barrios</x-slot>
     {{-- El logo ahora reemplaza al botón de volver --}}
     <x-slot name="logo_url">{{ route('admin.settings') }}</x-slot>
 
@@ -29,7 +30,7 @@
                             <option value="">Ciudad</option>
                             @foreach ($cities as $city)
                                 <option value="{{ $city->id }}" {{ request('city_id') == $city->id ? 'selected' : '' }}>
-                                    {{ $city->name }}
+                                    {{ $city->display_name }}
                                 </option>
                             @endforeach
                         </select>

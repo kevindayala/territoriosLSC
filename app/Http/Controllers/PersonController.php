@@ -23,23 +23,30 @@ class PersonController extends Controller
             });
         }
 
-        if ($request->filled('city_id')) {
-            $query->whereHas('territory', function ($q) use ($request) {
-                $q->where('city_id', $request->city_id);
+        if ($request->filled('city_id') && $request->city_id !== 'todas') {
+            $cityIds = \App\Models\City::where('id', $request->city_id)->orWhere('parent_id', $request->city_id)->pluck('id');
+            $query->whereHas('territory', function ($q) use ($cityIds) {
+                $q->whereIn('city_id', $cityIds);
             });
         }
 
         $persons = $query->latest()->paginate(20);
-        $cities = \App\Models\City::where('is_active', true)->orderBy('name')->get();
+        $cities = \App\Models\City::hierarchical()->where('cities.is_active', true)->get();
 
         return view('persons.index', compact('persons', 'cities'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $territories = Territory::where('status', 'active')->orderBy('code')->get();
-        $cities = \App\Models\City::where('is_active', true)->orderBy('name')->get();
-        return view('persons.create', compact('territories', 'cities'));
+        $cities = \App\Models\City::hierarchical()->where('cities.is_active', true)->get();
+
+        $initialTerritory = null;
+        if ($request->filled('territory_id')) {
+            $initialTerritory = Territory::find($request->territory_id);
+        }
+
+        return view('persons.create', compact('territories', 'cities', 'initialTerritory'));
     }
 
     public function store(Request $request)
@@ -70,13 +77,17 @@ class PersonController extends Controller
             ? 'Persona registrada y aprobada automáticamente.'
             : 'Persona registrada, pendiente de aprobación.';
 
+        if ($request->filled('redirect_to')) {
+            return redirect($request->redirect_to)->with('success', $message);
+        }
+
         return redirect()->route('persons.index')->with('success', $message);
     }
 
     public function edit(Person $person)
     {
         $territories = Territory::where('status', 'active')->orderBy('code')->get();
-        $cities = \App\Models\City::where('is_active', true)->orderBy('name')->get();
+        $cities = \App\Models\City::hierarchical()->where('cities.is_active', true)->get();
         return view('persons.edit', compact('person', 'territories', 'cities'));
     }
 
@@ -140,6 +151,7 @@ class PersonController extends Controller
             } else {
                 // If it's already pending (a new record not yet public), 
                 // just overwrite it directly.
+                $data['created_by_user_id'] = auth()->id();
                 $person->update($data);
             }
         }
@@ -148,6 +160,10 @@ class PersonController extends Controller
 
         if ($request->redirect_to === 'approvals') {
             return redirect()->route('approvals.index')->with('success', $msg);
+        }
+
+        if ($request->filled('redirect_to')) {
+            return redirect($request->redirect_to)->with('success', $msg);
         }
 
         return redirect()->route('persons.index')->with('success', $msg);

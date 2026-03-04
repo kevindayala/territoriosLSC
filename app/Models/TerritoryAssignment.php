@@ -17,11 +17,14 @@ class TerritoryAssignment extends Model
         'assigned_by_user_id',
         'assigned_at',
         'completed_at',
+        'type',
+        'due_date',
     ];
 
     protected $casts = [
         'assigned_at' => 'date',
         'completed_at' => 'date',
+        'due_date' => 'date',
     ];
 
     public function territory()

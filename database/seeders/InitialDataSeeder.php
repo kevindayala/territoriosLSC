@@ -11,16 +11,11 @@ class InitialDataSeeder extends Seeder
     {
         // Admin User
         $admin = \App\Models\User::firstOrCreate([
-            'email' => 'admin@example.com',
+            'email' => 'admin@lsc.com',
         ], [
-            'name' => 'Admin User',
-            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            'name' => 'Administrador LSC',
+            'password' => \Illuminate\Support\Facades\Hash::make('secret123'),
         ]);
         $admin->assignRole('admin');
-
-        // City
-        $city = \App\Models\City::create(['name' => 'Bucaramanga', 'slug' => 'bucaramanga', 'is_active' => true]);
-
-
     }
 }

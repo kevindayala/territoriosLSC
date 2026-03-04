@@ -36,7 +36,7 @@ class Territory extends Model
 
     public function persons()
     {
-        return $this->hasMany(Person::class);
+        return $this->hasMany(Person::class)->orderBy('sort_order')->orderBy('id');
     }
 
     public function assignments()

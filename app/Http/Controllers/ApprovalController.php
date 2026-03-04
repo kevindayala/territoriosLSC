@@ -11,13 +11,34 @@ class ApprovalController extends Controller
     {
         $pendingPersons = Person::where('status', 'pending')
             ->orWhereNotNull('pending_changes')
-            ->with(['territory', 'creator'])
+            ->with(['territory', 'creator', 'pendingUser'])
             ->latest()
-            ->paginate(15);
+            ->paginate(15, ['*'], 'persons_page');
+
+        $pendingUsers = \App\Models\User::where('is_active', false)
+            ->latest()
+            ->paginate(15, ['*'], 'users_page');
 
         $territories = \App\Models\Territory::all();
 
-        return view('approvals.index', compact('pendingPersons', 'territories'));
+        $pendingTerritoryRequests = \App\Models\TerritoryRequest::with(['user', 'territory'])
+            ->where('status', 'pending')
+            ->latest()
+            ->paginate(15, ['*'], 'requests_page');
+
+        return view('approvals.index', compact('pendingPersons', 'pendingUsers', 'territories', 'pendingTerritoryRequests'));
+    }
+
+    public function approveUser(\App\Models\User $user)
+    {
+        $user->update(['is_active' => true]);
+        return back()->with('success', 'Usuario habilitado correctamente.');
+    }
+
+    public function rejectUser(\App\Models\User $user)
+    {
+        $user->delete(); // Soft delete or force? User model has SoftDeletes.
+        return back()->with('success', 'Solicitud de registro eliminada.');
     }
 
     public function approve(Person $person)
@@ -55,5 +76,29 @@ class ApprovalController extends Controller
 
         $person->delete();
         return redirect()->route('approvals.index')->with('success', 'Registro eliminado/rechazado.');
+    }
+
+    public function approveTerritoryRequest(\App\Models\TerritoryRequest $territoryRequest)
+    {
+        $territoryRequest->update(['status' => 'approved']);
+
+        // Crear la asignación de territorio
+        \App\Models\TerritoryAssignment::create([
+            'territory_id' => $territoryRequest->territory_id,
+            'assigned_to_user_id' => $territoryRequest->user_id,
+            'assigned_by_user_id' => auth()->id(),
+            'assigned_at' => now(),
+            'due_date' => $territoryRequest->expected_return_date,
+            'notes' => 'Territorio Personal solicitado el ' . $territoryRequest->created_at->format('d/m/Y') . '. Fecha esperada de devolución: ' . \Carbon\Carbon::parse($territoryRequest->expected_return_date)->format('d/m/Y'),
+            'type' => 'personal'
+        ]);
+
+        return back()->with('success', 'Solicitud de territorio personal aprobada y territorio asignado.');
+    }
+
+    public function rejectTerritoryRequest(\App\Models\TerritoryRequest $territoryRequest)
+    {
+        $territoryRequest->update(['status' => 'rejected']);
+        return back()->with('success', 'Solicitud de territorio personal rechazada.');
     }
 }

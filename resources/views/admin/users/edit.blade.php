@@ -1,4 +1,5 @@
 <x-app-layout>
+    <x-slot name="title">Editar Usuario</x-slot>
     <x-slot name="logo_url">{{ route('users.index') }}</x-slot>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
@@ -58,6 +59,23 @@
                                     Contraseña</label>
                                 <input type="password" name="password_confirmation" id="password_confirmation"
                                     class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                            </div>
+
+                            {{-- Status --}}
+                            <div>
+                                <label for="is_active"
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300">Estado de la
+                                    cuenta</label>
+                                <select name="is_active" id="is_active" required
+                                    class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                    <option value="1" {{ old('is_active', $user->is_active) == 1 ? 'selected' : '' }}>
+                                        Activo</option>
+                                    <option value="0" {{ old('is_active', $user->is_active) == 0 ? 'selected' : '' }}>
+                                        Inactivo (Acceso restringido)</option>
+                                </select>
+                                @error('is_active')
+                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
                             </div>
 
                             {{-- Role --}}

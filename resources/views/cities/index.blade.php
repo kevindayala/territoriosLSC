@@ -1,4 +1,5 @@
 <x-app-layout>
+    <x-slot name="title">Ciudades</x-slot>
     {{-- El logo ahora reemplaza al botón de volver --}}
     <x-slot name="logo_url">{{ route('admin.settings') }}</x-slot>
 
@@ -63,7 +64,18 @@
                         <div class="flex justify-between items-center mb-4">
                             <div>
                                 <h3 class="font-bold text-gray-900 dark:text-white">{{ $city->name }}</h3>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider">
+                                @if($city->parent)
+                                    <p
+                                        class="text-[11px] text-blue-600 dark:text-blue-400 font-medium mt-0.5 flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                        </svg>
+                                        {{ $city->parent->name }}
+                                    </p>
+                                @endif
+                                <p
+                                    class="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider mt-1.5">
                                     {{ $city->territories_count }} Territorios
                                 </p>
                             </div>
@@ -123,6 +135,16 @@
                                         class="text-sm font-semibold text-gray-900 dark:text-white group-hover:dark:text-white">
                                         {{ $city->name }}
                                     </div>
+                                    @if($city->parent)
+                                        <div
+                                            class="text-[11px] text-blue-600 dark:text-blue-400 mt-0.5 font-medium flex items-center gap-1">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                            </svg>
+                                            {{ $city->parent->name }}
+                                        </div>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     <span

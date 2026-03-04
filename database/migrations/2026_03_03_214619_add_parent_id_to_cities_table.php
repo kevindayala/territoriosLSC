@@ -10,8 +10,8 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropUnique('users_email_unique');
+        Schema::table('cities', function (Blueprint $table) {
+            $table->foreignId('parent_id')->nullable()->after('id')->constrained('cities')->nullOnDelete();
         });
     }
 
@@ -20,8 +20,9 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->unique('email');
+        Schema::table('cities', function (Blueprint $table) {
+            $table->dropForeign(['parent_id']);
+            $table->dropColumn('parent_id');
         });
     }
 };

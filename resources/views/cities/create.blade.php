@@ -22,6 +22,22 @@
                             @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                         </div>
 
+                        {{-- Parent City --}}
+                        <div class="mb-4">
+                            <label for="parent_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Es
+                                subcategoría / Localidad de (Opcional)</label>
+                            <select name="parent_id" id="parent_id"
+                                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <option value="">Ninguna (Es una ciudad principal)</option>
+                                @foreach($parentCities as $parentCity)
+                                    <option value="{{ $parentCity->id }}" {{ old('parent_id') == $parentCity->id ? 'selected' : '' }}>
+                                        {{ $parentCity->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('parent_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        </div>
+
                         {{-- Active --}}
                         <div class="mb-4">
                             <label for="is_active" class="flex items-center">

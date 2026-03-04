@@ -70,7 +70,7 @@
                     <form method="POST" action="{{ route('persons.update', $person) }}">
                         @csrf
                         @method('PUT')
-                        <input type="hidden" name="redirect_to" value="{{ request('redirect_to', 'persons') }}">
+                        <input type="hidden" name="redirect_to" value="{{ request('redirect_to', route('persons.index')) }}">
 
                         <fieldset @if($showBlock) disabled @endif class="{{ $showBlock ? 'opacity-60 cursor-not-allowed' : '' }}">
                             {{-- Full Name --}}
@@ -97,7 +97,7 @@
                                         <option value="">Seleccione una ciudad...</option>
                                         @foreach($cities as $city)
                                             <option value="{{ $city->id }}" {{ $displayCityId == $city->id ? 'selected' : '' }}>
-                                                {{ $city->name }}
+                                                {{ $city->display_name }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -152,13 +152,22 @@
                         </fieldset>
 
                         <div class="flex items-center gap-4">
-                            <x-primary-button :disabled="$showBlock" class="{{ $showBlock ? 'opacity-50 cursor-not-allowed' : '' }}">
-                                {{ $showBlock ? __('Bloqueado por Revisión') : __('Actualizar') }}
-                            </x-primary-button>
+                            <button type="submit" {{ $showBlock ? 'disabled' : '' }} 
+                                class="inline-flex items-center justify-center h-11 px-8 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-lg shadow-emerald-100 dark:shadow-none transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed leading-none whitespace-nowrap">
+                                {{ $showBlock ? __('Bloqueado') : __('Actualizar') }}
+                            </button>
                             
-                            <a href="{{ request('redirect_to') === 'approvals' ? route('approvals.index') : route('persons.index') }}"
-                                class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150">
-                                {{ __('Volver') }}
+                            @php
+                                $backUrl = route('persons.index');
+                                if (request('redirect_to') === 'approvals') {
+                                    $backUrl = route('approvals.index');
+                                } elseif (request('redirect_to')) {
+                                    $backUrl = request('redirect_to');
+                                }
+                            @endphp
+                            <a href="{{ $backUrl }}"
+                                class="inline-flex items-center justify-center h-11 px-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl font-bold text-xs text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-all shadow-sm hover:shadow-md uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 leading-none whitespace-nowrap">
+                                {{ __('Cancelar') }}
                             </a>
                         </div>
                     </form>

@@ -75,12 +75,28 @@ class TerritoryAssignmentController extends Controller
             return back()->with('error', 'No autorizado.');
         }
 
-        if ($assignment->completed_at) {
+        // Only admins can delete completed assignments (as an 'undo' action)
+        if ($assignment->completed_at && !auth()->user()->hasRole('admin')) {
             return back()->with('error', 'No se puede cancelar una asignación completada.');
         }
 
+        $territory = $assignment->territory;
+        $wasCompleted = !is_null($assignment->completed_at);
+
         $assignment->delete();
 
-        return back()->with('success', 'Asignación cancelada correctamente.');
+        // If a completed assignment was deleted, we must restore the previous completion date
+        if ($wasCompleted) {
+            $latestCompletion = $territory->assignments()
+                ->whereNotNull('completed_at')
+                ->latest('completed_at')
+                ->first();
+
+            $territory->update([
+                'last_completed_at' => $latestCompletion ? $latestCompletion->completed_at : null
+            ]);
+        }
+
+        return back()->with('success', 'Asignación eliminada correctamente.');
     }
 }
