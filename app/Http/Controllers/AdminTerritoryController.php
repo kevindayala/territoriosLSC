@@ -91,7 +91,7 @@ class AdminTerritoryController extends Controller
         }
 
         // Sorting
-        $sort = $request->input('sort', 'date_desc');
+        $sort = $request->input('sort', 'code');
         if ($sort === 'date_asc') {
             $query->orderByRaw('last_completed_at IS NULL DESC')
                 ->orderBy('last_completed_at', 'ASC');

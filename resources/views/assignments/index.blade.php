@@ -2,9 +2,11 @@
     <x-slot name="title">Mis Asignaciones</x-slot>
     <x-slot name="logo_url">{{ route('dashboard') }}</x-slot>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Mis Asignaciones') }}
-        </h2>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                {{ __('Mis Asignaciones') }}
+            </h2>
+        </div>
     </x-slot>
 
     <div class="py-6 px-4 max-w-7xl mx-auto space-y-8" x-data="{ selectedAssignmentId: null }">
@@ -128,6 +130,21 @@
                     @endforelse
                 </ul>
             </div>
+        </div>
+
+        {{-- CTA section moved to bottom --}}
+        <div
+            class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm text-left sm:text-center">
+            <p class="text-gray-600 dark:text-gray-400 font-medium mb-4">
+                Solicita un territorio para trabajar de forma personal
+            </p>
+            <a href="{{ route('territory-requests.create') }}"
+                class="inline-flex items-center px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 active:scale-95 transition-all gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
+                </svg>
+                Solicitar Territorio Personal
+            </a>
         </div>
 
         <x-modal-confirm name="confirm-cancel" title="Cancelar Asignación"

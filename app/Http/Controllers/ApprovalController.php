@@ -80,6 +80,15 @@ class ApprovalController extends Controller
 
     public function approveTerritoryRequest(\App\Models\TerritoryRequest $territoryRequest)
     {
+        // Validar que el territorio no esté ocupado antes de aprobar
+        $isOccupied = \App\Models\TerritoryAssignment::where('territory_id', $territoryRequest->territory_id)
+            ->whereNull('completed_at')
+            ->exists();
+
+        if ($isOccupied) {
+            return back()->with('error', 'No se puede aprobar esta solicitud porque el territorio ya tiene una asignación activa.');
+        }
+
         $territoryRequest->update(['status' => 'approved']);
 
         // Crear la asignación de territorio

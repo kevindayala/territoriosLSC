@@ -45,33 +45,7 @@
                 </div>
             </a>
 
-            @role('admin')
-            <a href="{{ route('approvals.index') }}"
-                class="group relative bg-white dark:bg-gray-800 rounded-2xl p-4 md:p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:scale-[1.02] border border-gray-100 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/40 transition-all duration-300 flex md:flex-col items-center gap-4 md:gap-6 active:scale-[0.98]">
-                <div
-                    class="flex-shrink-0 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
-                    <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <div class="flex-1 min-w-0 md:text-center">
-                    <h3
-                        class="text-base md:text-lg font-semibold text-slate-800 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                        {{ __('Aprobaciones') }}
-                    </h3>
-                    <p
-                        class="text-xs md:text-sm text-slate-400 dark:text-slate-500 mt-0.5 md:mt-2 truncate group-hover:text-slate-500">
-                        Revisar pendientes
-                    </p>
-                </div>
-                <div class="md:hidden text-gray-300">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </div>
-            </a>
-            @endrole
+
 
             <a href="{{ route('persons.index') }}"
                 class="group relative bg-white dark:bg-gray-800 rounded-2xl p-4 md:p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:scale-[1.02] border border-gray-100 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/40 transition-all duration-300 flex md:flex-col items-center gap-4 md:gap-6 active:scale-[0.98]">
@@ -90,7 +64,7 @@
                     </h3>
                     <p
                         class="text-xs md:text-sm text-slate-400 dark:text-slate-500 mt-0.5 md:mt-2 truncate group-hover:text-slate-500">
-                        Lista de personas
+                        Lista de personas sordas
                     </p>
                 </div>
                 <div class="md:hidden text-gray-300">
@@ -152,6 +126,63 @@
                     </svg>
                 </div>
             </a>
+
+            @role('admin')
+            <a href="{{ route('approvals.index') }}"
+                class="group relative bg-white dark:bg-gray-800 rounded-2xl p-4 md:p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:scale-[1.02] border border-gray-100 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/40 transition-all duration-300 flex md:flex-col items-center gap-4 md:gap-6 active:scale-[0.98]">
+                <div
+                    class="flex-shrink-0 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                    <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0 md:text-center">
+                    <h3
+                        class="text-base md:text-lg font-semibold text-slate-800 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        {{ __('Aprobaciones') }}
+                    </h3>
+                    <p
+                        class="text-xs md:text-sm text-slate-400 dark:text-slate-500 mt-0.5 md:mt-2 truncate group-hover:text-slate-500">
+                        Revisar pendientes
+                    </p>
+                </div>
+                <div class="md:hidden text-gray-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </div>
+            </a>
+            @endrole
+
+            @role('admin')
+            <a href="{{ route('admin.registros.index') }}"
+                class="group relative bg-white dark:bg-gray-800 rounded-2xl p-4 md:p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:scale-[1.02] border border-gray-100 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/40 transition-all duration-300 flex md:flex-col items-center gap-4 md:gap-6 active:scale-[0.98]">
+                <div
+                    class="flex-shrink-0 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                    <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+                        </path>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0 md:text-center">
+                    <h3
+                        class="text-base md:text-lg font-semibold text-slate-800 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        {{ __('Registro de Territorios') }}
+                    </h3>
+                    <p
+                        class="text-xs md:text-sm text-slate-400 dark:text-slate-500 mt-0.5 md:mt-2 truncate group-hover:text-slate-500">
+                        {{ __('Gestionar registros de territorio') }}
+                    </p>
+                </div>
+                <div class="md:hidden text-gray-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </div>
+            </a>
+            @endrole
 
             <a href="{{ route('profile.edit') }}"
                 class="group relative bg-white dark:bg-gray-800 rounded-2xl p-4 md:p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:scale-[1.02] border border-gray-100 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/40 transition-all duration-300 flex md:flex-col items-center gap-4 md:gap-6 active:scale-[0.98]">

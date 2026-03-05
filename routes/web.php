@@ -27,10 +27,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/territories/export-backup', [App\Http\Controllers\TerritoryImportExportController::class, 'exportBackup'])->name('admin.territories.export-backup');
     Route::post('/admin/territories/import', [App\Http\Controllers\TerritoryImportExportController::class, 'import'])->name('admin.territories.import');
 
+    // Registros (Assignments) Import/Export
+    Route::get('/admin/registros/export-backup', [App\Http\Controllers\TerritoryImportExportController::class, 'exportRegistrosBackup'])->name('admin.registros.export-backup');
+    Route::post('/admin/registros/import', [App\Http\Controllers\TerritoryImportExportController::class, 'importRegistros'])->name('admin.registros.import');
+
     Route::get('/admin/territories', [App\Http\Controllers\AdminTerritoryController::class, 'index'])->name('admin.territories.index');
 
     Route::resource('cities', App\Http\Controllers\CityController::class);
     Route::resource('assignments', App\Http\Controllers\TerritoryAssignmentController::class);
+    Route::post('users/toggle-registration', [App\Http\Controllers\AdminUserController::class, 'toggleRegistration'])->name('users.toggle-registration');
     Route::post('users/{user}/restore', [App\Http\Controllers\AdminUserController::class, 'restore'])->name('users.restore')->withTrashed();
     Route::resource('users', App\Http\Controllers\AdminUserController::class);
     Route::resource('admin/personal-territories', App\Http\Controllers\AdminPersonalTerritoryController::class, [
@@ -56,6 +61,11 @@ Route::middleware('auth')->group(function () {
         // User Approvals
         Route::post('/approvals/users/{user}/approve', [App\Http\Controllers\ApprovalController::class, 'approveUser'])->name('approvals.user.approve');
         Route::post('/approvals/users/{user}/reject', [App\Http\Controllers\ApprovalController::class, 'rejectUser'])->name('approvals.user.reject');
+
+        // Admin Registros (Territory Assignments CRUD for admins)
+        Route::resource('admin/registros', App\Http\Controllers\AdminRegistroController::class, [
+            'as' => 'admin'
+        ]);
     });
 
     // Territory Requests for users

@@ -71,7 +71,7 @@ php artisan serve
 
 ---
 
-## 8. Despliegue en Producción (Servidor Web)
+## 9. Despliegue en Producción (Servidor Web)
 
 A continuación, se detalla el proceso paso a paso para subir tu aplicación a un servidor de producción típico (como Hostinger, cPanel, u otro hosting compartido/VPS):
 
@@ -141,15 +141,18 @@ Tu panel de hosting seguramente tiene una opción llamada **Terminal** o **Acces
    ```bash
    php artisan key:generate
    ```
-4. Arma las tablas de tu base de datos y crea los roles de usuario:
+4. Arma las tablas de tu base de datos y crea el usuario administrador por defecto:
    ```bash
-   php artisan migrate --force
+   php artisan migrate --force --seed
    ```
-5. **(TRUCO DE VELOCIDAD):** Ejecuta esto para que Laravel sea muchísimo más rápido recordando tus configuraciones de memoria:
+   *(Esto creará el usuario admin con las credenciales por defecto: `admin@lsc.com` / `secret123`)*
+5. Crea el enlace simbólico para que las imágenes subidas sean visibles públicamente:
    ```bash
-   php artisan config:cache
-   php artisan route:cache
-   php artisan view:cache
+   php artisan storage:link
+   ```
+6. **(TRUCO DE VELOCIDAD):** Ejecuta esto para que Laravel sea muchísimo más rápido recordando tus configuraciones de memoria:
+   ```bash
+   php artisan optimize
    ```
 
 ### Paso F: Permisos y Listo
@@ -159,7 +162,7 @@ Dependiendo de tu servidor, es recomendable asegurarse de que el sistema tenga p
 
 ---
 
-## 9. Despliegue usando Git via SSH o Terminal (Recomendado)
+## 10. Despliegue usando Git via SSH o Terminal (Recomendado)
 
 Si tu servidor (VPS o Hosting compartido como cPanel, Hostinger, etc.) tiene acceso a la "Terminal" o "SSH", y lo tiene instalado, este es el método más rápido y profesional. En lugar de subir pesados archivos `.zip`, enlazaremos el servidor directamente con tu repositorio de GitHub. 
 
@@ -211,10 +214,10 @@ Como el repositorio es **público**, el proceso es extremadamente sencillo y no 
 6. **Levanta la estructura de la aplicación y enlázala:**
    ```bash
    php artisan key:generate
-   php artisan migrate --force
+   php artisan migrate --force --seed
    php artisan storage:link
    ```
-   *(Nota: El `--force` sirve para que la terminal no se detenga preguntando si estás seguro).*
+   *(Nota: El `--force` sirve para que la terminal no se detenga preguntando si estás seguro. El `--seed` crea el usuario admin por defecto: `admin@lsc.com` / `secret123`)*
 7. **Modo Turbo (Caché final):**
    ```bash
    php artisan optimize
@@ -224,7 +227,7 @@ Como el repositorio es **público**, el proceso es extremadamente sencillo y no 
 
 ---
 
-### FASE 3: ¿Cómo actualizar futuros cambios en segundos? (La Magia)
+### FASE 2: ¿Cómo actualizar futuros cambios en segundos? (La Magia)
 
 Este es el mayor beneficio de usar Git. Cuando programes nuevas cosas, corrijas bugs o cambies el diseño en tu ordenador local, harás tu flujo normal de Git para subirlo a la nube (`git add .`, `git commit -m "nuevos cambios"`, `git push`). 
 
@@ -279,6 +282,84 @@ Si esto te ocurre, debes asegurarte de ejecutar estos comandos en la terminal de
 
 **✨ Nota sobre Tareas Programadas (Crons):**  
 A diferencia de aplicaciones Laravel tradicionales, **este proyecto NO requiere que configures tareas programadas (Crons) en tu servidor** para el cierre automático de territorios. Hemos implementado un sistema "Auto-Pilot" mediante un Middleware. Mientras el sistema reciba tráfico o se esté usando, él mismo revisará y completará de manera silenciosa las asignaciones que tengan más de 6 horas usando la caché para no impactar el rendimiento del servidor. No tienes que hacer nada más.
+
+---
+
+---
+
+## 11. Configuración de Envío de Email
+
+Para que el sistema pueda enviar correos electrónicos (recuperación de contraseñas, notificaciones), debes configurar un servidor SMTP en tu archivo `.env`.
+
+### A. Usando Gmail (Recomendado)
+1. Activa la **Verificación en dos pasos** en tu cuenta de Google.
+2. Genera una **"Contraseña de Aplicación"** (Seguridad > Verificación en dos pasos > Contraseñas de aplicaciones).
+3. Configura tu `.env` así:
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=465
+MAIL_USERNAME=tu-correo@gmail.com
+MAIL_PASSWORD=tu-contraseña-de-16-caracteres
+MAIL_ENCRYPTION=ssl
+MAIL_FROM_ADDRESS="tu-correo@gmail.com"
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+### B. Usando Mailtrap (Pruebas)
+Ideal para desarrollo local sin enviar correos reales:
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=tu_usuario
+MAIL_PASSWORD=tu_password
+MAIL_ENCRYPTION=tls
+```
+
+### C. Importante: Cola de correos
+El sistema usa colas para no ralentizar la carga de la página. Para que los correos salgan de la cola tienes dos opciones según tu entorno:
+
+**En desarrollo local** (corre el proceso en segundo plano mientras trabajas):
+```bash
+php artisan queue:work
+```
+*(Deja esta terminal abierta mientras pruebas el envío de correos. Presiona `Ctrl+C` para detenerlo).*
+
+**En producción VPS** (con Supervisor para que corra siempre automáticamente):
+```bash
+# Instalar supervisor si no está:
+sudo apt install supervisor
+
+# Crear archivo de configuración:
+sudo nano /etc/supervisor/conf.d/territorios-queue.conf
+```
+Contenido del archivo:
+```ini
+[program:territorios-queue]
+process_name=%(program_name)s_%(process_num)02d
+command=php /home/tu_usuario/app-territorios/artisan queue:work --sleep=3 --tries=3 --max-time=3600
+autostart=true
+autorestart=true
+user=tu_usuario
+numprocs=1
+redirect_stderr=true
+stdout_logfile=/home/tu_usuario/app-territorios/storage/logs/queue.log
+```
+Luego activa el proceso:
+```bash
+sudo supervisorctl reread
+sudo supervisorctl update
+sudo supervisorctl start territorios-queue:*
+```
+
+**En hosting compartido** (sin acceso a Supervisor):
+```bash
+# Configura un Cron Job desde el panel de control de tu hosting:
+* * * * * php /home/tu_usuario/app-territorios/artisan queue:work --stop-when-empty
+```
+
+> **Nota:** La cola de correos es **independiente** del sistema Auto-Pilot de cierre de territorios (que sí es automático sin configuración). La cola solo es necesaria si activas el envío de emails.
 
 ---
 

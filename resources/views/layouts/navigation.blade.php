@@ -23,12 +23,15 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Inicio') }}
                     </x-nav-link>
+
                     <x-nav-link :href="route('territories.index')" :active="request()->routeIs('territories.*')">
                         {{ __('Territorios') }}
                     </x-nav-link>
+
                     <x-nav-link :href="route('persons.index')" :active="request()->routeIs('persons.*')">
-                        {{ __('Personas') }}
+                        {{ __('Sordos') }}
                     </x-nav-link>
+
                     <x-nav-link :href="route('assignments.index')" :active="request()->routeIs('assignments.*')">
                         {{ __('Asignaciones') }}
                     </x-nav-link>
@@ -36,6 +39,13 @@
                     @role('admin')
                     <x-nav-link :href="route('approvals.index')" :active="request()->routeIs('approvals.*')">
                         {{ __('Aprobaciones') }}
+                    </x-nav-link>
+                    @endrole
+
+                    @role('admin')
+                    <x-nav-link :href="route('admin.registros.index')"
+                        :active="request()->routeIs('admin.registros.*')">
+                        {{ __('Registros') }}
                     </x-nav-link>
                     <x-nav-link :href="route('admin.settings')" :active="request()->routeIs('admin.settings')">
                         {{ __('Ajustes') }}

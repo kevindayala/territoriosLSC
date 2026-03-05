@@ -1,55 +1,64 @@
 <x-app-layout>
-    <x-slot name="title">Territorios Admin</x-slot>
-    {{-- El logo ahora reemplaza al botón de volver --}}
+    <x-slot name="title">Registros Admin</x-slot>
     <x-slot name="logo_url">{{ route('admin.settings') }}</x-slot>
 
-    <div class="pt-6 pb-12 md:py-12"
-        x-data="{ selectedId: null, showFilters: {{ (request('city_id') || request('filter') || (request('sort') && request('sort') != 'code')) ? 'true' : 'false' }} }">
-        {{-- Título de la página --}}
-        <x-slot name="header">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4" x-data="{}">
-                <h2
-                    class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight text-center sm:text-left">
-                    {{ __('Territorios') }}
-                </h2>
-                <div class="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
-                    {{-- Backup: Exportar --}}
-                    <a href="{{ route('admin.territories.export-backup') }}"
-                        class="flex-1 sm:flex-none inline-flex items-center justify-center px-3 sm:px-4 h-11 sm:h-10 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-full shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all gap-1.5 sm:gap-2"
-                        title="Descargar backup de todos los territorios y sordos">
-                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                            </path>
-                        </svg>
-                        <span class="text-sm font-bold whitespace-nowrap">Exportar</span>
-                    </a>
+    <x-slot name="header">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4" x-data="{}">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight text-center sm:text-left">
+                {{ __('Registro de Territorios') }}
+            </h2>
+            <div class="flex items-center gap-2 sm:gap-3 w-full sm:w-auto flex-wrap justify-center sm:justify-end">
+                {{-- Backup: Exportar --}}
+                <a href="{{ route('admin.registros.export-backup') }}"
+                    class="inline-flex items-center justify-center px-3 sm:px-4 h-11 sm:h-10 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-full shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all gap-1.5 sm:gap-2"
+                    title="Descargar backup de los registros de asignaciones">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
+                    </svg>
+                    <span class="text-sm font-bold whitespace-nowrap">Exportar</span>
+                </a>
 
-                    {{-- Backup: Importar --}}
-                    <button type="button" x-on:click="$dispatch('open-modal', 'import-backup-modal')"
-                        class="flex-1 sm:flex-none inline-flex items-center justify-center px-3 sm:px-4 h-11 sm:h-10 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-full shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all gap-1.5 sm:gap-2"
-                        title="Restaurar territorios desde un backup">
-                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12">
-                            </path>
-                        </svg>
-                        <span class="text-sm font-bold whitespace-nowrap">Importar</span>
-                    </button>
+                {{-- Backup: Importar --}}
+                <button type="button" x-on:click="$dispatch('open-modal', 'import-backup-modal')"
+                    class="inline-flex items-center justify-center px-3 sm:px-4 h-11 sm:h-10 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-full shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all gap-1.5 sm:gap-2"
+                    title="Restaurar territorios desde un backup">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12">
+                        </path>
+                    </svg>
+                    <span class="text-sm font-bold whitespace-nowrap">Importar</span>
+                </button>
 
-                    {{-- Registrar Territorio --}}
-                    <a href="{{ route('territories.create', ['redirect_to' => 'admin']) }}"
-                        class="flex-1 sm:flex-none inline-flex items-center justify-center px-3 sm:px-4 h-11 sm:h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg shadow-blue-500/20 active:scale-95 transition-all gap-1.5 sm:gap-2">
-                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
-                        </svg>
-                        <span class="text-sm font-bold whitespace-nowrap hidden sm:inline">Registrar Territorio</span>
-                        <span class="text-sm font-bold sm:hidden">Nuevo</span>
-                    </a>
-                </div>
+                {{-- Exportar S-13 --}}
+                <button type="button" x-on:click="$dispatch('open-modal', 's13-export-modal')"
+                    class="inline-flex items-center justify-center px-3 sm:px-4 h-11 sm:h-10 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-full shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all gap-1.5 sm:gap-2">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
+                    </svg>
+                    <span class="text-sm font-bold whitespace-nowrap">S-13</span>
+                </button>
+
+                {{-- Nuevo Registro --}}
+                <a href="{{ route('admin.registros.create') }}"
+                    class="inline-flex items-center justify-center px-3 sm:px-4 h-11 sm:h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg shadow-blue-500/20 active:scale-95 transition-all gap-1.5 sm:gap-2">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span class="text-sm font-bold whitespace-nowrap">Nuevo Registro</span>
+                </a>
             </div>
-        </x-slot>
+        </div>
+    </x-slot>
 
+    <div class="pt-6 pb-12 md:py-12" x-data="{ 
+        selectedId: null,
+        showFilters: {{ (request('city_id') || request('filter') || (request('sort') && request('sort') != 'id')) ? 'true' : 'false' }} 
+    }">
         {{-- Top Navigation & Search --}}
         <div class="mt-4 sm:mt-6 mb-8">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -103,12 +112,12 @@
 
                 {{-- Filters & Search Row --}}
                 <div class="mb-8">
-                    <form method="GET" action="{{ route('admin.territories.index') }}" class="w-full">
+                    <form method="GET" action="{{ route('admin.registros.index') }}" class="w-full">
                         {{-- Clean Search Bar --}}
                         <div class="border-b border-gray-200 dark:border-gray-700 pb-3 mb-2">
                             <div class="flex items-center w-full">
-                                <input type="text" name="search" id="search" value="{{ request('search') }}"
-                                    placeholder="{{ __('Buscar código o barrio') }}"
+                                <input type="text" name="search" value="{{ request('search') }}"
+                                    placeholder="{{ __('Buscar por territorio o usuario') }}"
                                     class="flex-1 border border-gray-400 dark:border-gray-600 rounded bg-white dark:bg-gray-800 focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-[15px] placeholder-gray-500 dark:placeholder-gray-400 text-gray-800 dark:text-gray-200 px-3 py-1.5 outline-none shadow-sm">
 
                                 <div class="flex items-center gap-3 pl-3">
@@ -171,14 +180,17 @@
                                         class="block text-[13px] font-bold text-[#334155] dark:text-gray-400 tracking-wide mb-2">{{ __('Ordenar por') }}</label>
                                     <select name="sort" id="sort" onchange="this.form.submit()"
                                         class="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-[#0f172a] dark:text-gray-200 text-[15px] font-medium focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 py-2.5 pl-3.5 pr-10 shadow-sm transition-colors cursor-pointer">
-                                        <option value="code" {{ request('sort') == 'code' || !request('sort') ? 'selected' : '' }}>
+                                        <option value="id" {{ request('sort') == 'id' || !request('sort') ? 'selected' : '' }}>
+                                            {{ __('Recientes') }}
+                                        </option>
+                                        <option value="code" {{ request('sort') == 'code' ? 'selected' : '' }}>
                                             {{ __('Código') }}
                                         </option>
                                         <option value="date_desc" {{ request('sort') == 'date_desc' ? 'selected' : '' }}>
-                                            {{ __('Trabajados recientemente') }}
+                                            {{ __('Fecha asignación (Recientes)') }}
                                         </option>
                                         <option value="date_asc" {{ request('sort') == 'date_asc' ? 'selected' : '' }}>
-                                            {{ __('Más tiempo sin trabajar') }}
+                                            {{ __('Fecha asignación (Antiguos)') }}
                                         </option>
                                     </select>
                                 </div>
@@ -188,9 +200,6 @@
                                     <label
                                         class="block text-[13px] font-bold text-[#334155] dark:text-gray-400 tracking-wide mb-3">{{ __('Filtrar por') }}</label>
                                     <div class="flex flex-col gap-3.5">
-
-
-
                                         <label class="group flex items-center gap-3 cursor-pointer w-max">
                                             <input type="checkbox" name="filter[]" value="recommended"
                                                 onchange="this.form.submit()" {{ in_array('recommended', (array) request('filter')) ? 'checked' : '' }}
@@ -226,7 +235,6 @@
                                                 {{ __('Realizados en el último mes') }}
                                             </span>
                                         </label>
-
                                     </div>
                                 </div>
                             </div>
@@ -236,96 +244,49 @@
             </div>
         </div>
 
-        {{-- Contenido Principal --}}
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Mobile Card View -->
+            <!-- Mobile View -->
             <div class="block md:hidden w-full space-y-4">
-                @forelse($territories as $territory)
+                @forelse($registros as $registro)
                     <div
-                        class="bg-white dark:bg-gray-800 p-5 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
-                        <div class="mb-5">
+                        class="bg-white dark:bg-gray-800 p-5 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm relative">
+                        <div class="mb-4">
                             <div class="flex justify-between items-start gap-3">
-                                <div class="flex-1 min-w-0">
-                                    <h3
-                                        class="font-bold text-[15px] text-gray-900 dark:text-white leading-tight break-words">
-                                        {{ $territory->code }} - {{ $territory->neighborhood_name ?? '-' }}
+                                <div>
+                                    <h3 class="font-bold text-[15px] text-gray-900 dark:text-white leading-tight">
+                                        Territorio: {{ $registro->territory->code ?? 'N/A' }}
                                     </h3>
-                                    <p
-                                        class="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-1 flex flex-wrap items-center gap-x-1.5 uppercase tracking-wide">
-                                        <span>{{ $territory->city->name ?? '-' }}</span>
-                                        @php
-                                            $isAssigned = $territory->assignments->whereNull('completed_at')->isNotEmpty();
-                                            $monthsSince = $territory->last_completed_at ? (int) $territory->last_completed_at->diffInMonths(now()) : null;
-
-                                            $statusColor = 'text-gray-500 dark:text-gray-400';
-                                            $statusText = '';
-
-                                            if ($isAssigned) {
-                                                $statusColor = 'text-gray-400 dark:text-gray-600';
-                                            } elseif ($monthsSince === null || $monthsSince >= 6) {
-                                                $statusColor = 'text-gray-600 dark:text-gray-300 font-bold';
-                                                $statusText = $monthsSince === null ? 'Nunca realizado' : "Hace $monthsSince meses";
-                                            } elseif ($monthsSince >= 2) {
-                                                $statusColor = 'text-gray-500 dark:text-gray-400 font-medium';
-                                                $statusText = "Hace $monthsSince meses";
-                                            } else {
-                                                $statusColor = 'text-gray-500 dark:text-gray-400';
-                                                $statusText = $territory->last_completed_at->format('d/m/Y');
-                                            }
-                                        @endphp
-
-                                        @if ($statusText)
-                                            <span class="text-gray-300 font-normal">•</span>
-                                            <span class="{{ $statusColor }}">{{ $statusText }}</span>
-                                        @endif
+                                    <div
+                                        class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 uppercase font-bold tracking-tight">
+                                        {{ $registro->territory->city->name ?? '-' }} •
+                                        {{ $registro->territory->neighborhood_name ?? '-' }}
+                                    </div>
+                                    <p class="text-[12px] text-gray-500 dark:text-gray-400 font-medium mt-1">
+                                        Usuario: {{ $registro->assignedTo->name ?? 'N/A' }}
+                                    </p>
+                                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">
+                                        Asignado:
+                                        {{ $registro->assigned_at ? $registro->assigned_at->format('d/m/Y') : '-' }} <br>
+                                        Completado:
+                                        {{ $registro->completed_at ? $registro->completed_at->format('d/m/Y') : 'Pendiente' }}
                                     </p>
                                 </div>
                                 <div class="flex flex-col items-end flex-shrink-0 pt-0.5">
-                                    @php
-                                        $activeAssignment = $territory->assignments->whereNull('completed_at')->first();
-                                        $isAssigned = !is_null($activeAssignment);
-                                        $lastCompletedAssignment = $territory->assignments->whereNotNull('completed_at')->sortByDesc('completed_at')->first();
-                                    @endphp
                                     <div
-                                        class="inline-flex items-center px-2 py-0.5 rounded-full {{ $isAssigned ? 'bg-red-50 dark:bg-red-900/20' : 'bg-green-50 dark:bg-green-900/20' }} border {{ $isAssigned ? 'border-red-100 dark:border-red-800' : 'border-green-100 dark:border-green-800' }}">
-                                        <div
-                                            class="h-1.5 w-1.5 rounded-full me-1.5 {{ $isAssigned ? 'bg-red-500' : 'bg-green-500' }}">
-                                        </div>
-                                        <span
-                                            class="text-[9px] font-black uppercase tracking-wider {{ $isAssigned ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400' }}">
-                                            {{ $isAssigned ? 'Asignado' : 'Disponible' }}
+                                        class="inline-flex items-center px-2 py-0.5 rounded-full {{ $registro->completed_at ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border-green-100' : 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-100' }} border">
+                                        <span class="text-[9px] font-black uppercase tracking-wider">
+                                            {{ $registro->completed_at ? 'Completado' : 'Pendiente' }}
                                         </span>
                                     </div>
-                                    @if ($isAssigned && $activeAssignment->assignedTo)
+                                    @if($registro->type === 'personal')
                                         <span
-                                            class="text-[9px] text-gray-500 dark:text-gray-400 font-bold uppercase mt-1.5 tracking-tighter">{{ $activeAssignment->assignedTo->name }}</span>
-                                        @if ($activeAssignment->type === 'personal')
-                                            <span
-                                                class="text-[8px] bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 px-1.5 rounded border border-amber-200 dark:border-amber-800/50 mt-1 font-black uppercase">PERSONAL</span>
-                                        @endif
-                                    @elseif (isset($lastCompletedAssignment) && $lastCompletedAssignment->assignedTo)
-                                        <span
-                                            class="text-[9px] text-gray-400 dark:text-gray-500 font-semibold uppercase mt-1.5 tracking-tighter">{{ $lastCompletedAssignment->assignedTo->name }}</span>
-                                        @if ($lastCompletedAssignment->type === 'personal')
-                                            <span
-                                                class="text-[8px] bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-500/70 px-1.5 rounded border border-amber-100 dark:border-amber-900/40 mt-1 font-black uppercase opacity-80">PERSONAL</span>
-                                        @endif
+                                            class="text-[8px] bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 px-1.5 rounded border border-amber-200 dark:border-amber-800/50 mt-1.5 font-black uppercase">PERSONAL</span>
                                     @endif
                                 </div>
                             </div>
                         </div>
                         <div class="flex gap-2">
-                            <a href="{{ route('territories.show', $territory) }}"
-                                class="flex-1 flex items-center justify-center px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 dark:text-blue-300 text-sm font-bold rounded-xl transition-colors border border-blue-100 dark:border-blue-800/50">
-                                <svg class="w-4 h-4 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
-                                Ver
-                            </a>
-                            <a href="{{ route('territories.edit', $territory) }}"
+                            <a href="{{ route('admin.registros.edit', $registro) }}"
                                 class="flex-1 flex items-center justify-center px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700/50 dark:text-gray-300 text-sm font-bold rounded-xl transition-colors border border-gray-200 dark:border-gray-700">
                                 <svg class="w-4 h-4 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -333,170 +294,114 @@
                                 </svg>
                                 Editar
                             </a>
-                            <form id="delete-form-mobile-{{ $territory->id }}"
-                                action="{{ route('territories.destroy', $territory) }}" method="POST" class="inline-block">
-                                @csrf
-                                @method('DELETE')
-                                <button type="button"
-                                    @click="selectedId = {{ $territory->id }}; $dispatch('open-modal', 'confirm-delete-mobile')"
-                                    class="p-2 bg-red-50 dark:bg-red-900/20 text-red-600 border border-red-100 dark:border-red-900/30 rounded-xl transition-colors">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                </button>
-                            </form>
+                            <button type="button"
+                                @click="selectedId = {{ $registro->id }}; $dispatch('open-modal', 'confirm-delete-mobile')"
+                                class="p-2 bg-red-50 dark:bg-red-900/20 text-red-600 border border-red-100 dark:border-red-900/30 rounded-xl transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 @empty
                     <div
-                        class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm text-center text-gray-500 dark:text-gray-400 border border-gray-100 dark:border-gray-700">
-                        No hay territorios registrados.
+                        class="bg-white dark:bg-gray-800 p-6 rounded-lg text-center text-gray-500 dark:text-gray-400 border border-gray-100 dark:border-gray-700">
+                        No hay registros.
                     </div>
                 @endforelse
             </div>
 
-            <!-- Desktop Table View -->
+            <!-- Desktop View -->
             <div
                 class="hidden md:block bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden shadow-sm">
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-gray-50/50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700">
-                            <th
-                                class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">
                                 Código</th>
-                            <th
-                                class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">
                                 Ciudad</th>
-                            <th
-                                class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">
                                 Barrio</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Usuario
+                            </th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Asignado
+                            </th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">
+                                Completado</th>
                             <th
-                                class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                Última vez</th>
-                            <th
-                                class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                Estado</th>
-                            <th
-                                class="px-6 py-4 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                class="px-6 py-4 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">
                                 Acciones</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-                        @forelse($territories as $territory)
-                            <tr
-                                class="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-slate-900/60 transition-colors group">
-                                <td class="px-6 py-4">
-                                    <div
-                                        class="text-sm font-bold text-gray-900 dark:text-white group-hover:dark:text-white">
-                                        {{ $territory->code }}
+                        @forelse($registros as $registro)
+                            <tr class="hover:bg-gray-50 dark:hover:bg-slate-900/60 transition-colors">
+                                <td class="px-6 py-4 font-bold text-gray-900 dark:text-white">
+                                    {{ $registro->territory->code ?? 'N/A' }}
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+                                    {{ $registro->territory->city->name ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+                                    {{ $registro->territory->neighborhood_name ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+                                    {{ $registro->assignedTo->name ?? 'N/A' }}
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                    <div class="flex flex-col">
+                                        <span>{{ $registro->assigned_at ? $registro->assigned_at->format('d/m/Y') : '-' }}</span>
+                                        @if($registro->type === 'personal')
+                                            <span
+                                                class="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase mt-0.5">Territorio
+                                                Personal</span>
+                                        @endif
                                     </div>
                                 </td>
-                                <td class="px-6 py-4">
-                                    <div class="text-sm text-gray-600 dark:text-gray-300 group-hover:dark:text-white">
-                                        {{ $territory->city->name ?? '-' }}
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="text-sm text-gray-600 dark:text-gray-300 group-hover:dark:text-white">
-                                        {{ $territory->neighborhood_name ?? '-' }}
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    @php
-                                        $activeAssignment = $territory->assignments->whereNull('completed_at')->first();
-                                        $isAssigned = !is_null($activeAssignment);
-                                        $lastCompletedAssignment = $territory->assignments->whereNotNull('completed_at')->sortByDesc('completed_at')->first();
-                                        $monthsSince = $territory->last_completed_at ? (int) $territory->last_completed_at->diffInMonths(now()) : null;
-                                        $dateColorClass = 'text-gray-500 dark:text-gray-400';
-
-                                        if ($isAssigned) {
-                                            $dateColorClass = 'text-gray-400 dark:text-gray-600';
-                                        } elseif ($monthsSince === null || $monthsSince >= 6) {
-                                            $dateColorClass = 'text-gray-600 dark:text-gray-300 font-semibold';
-                                        } elseif ($monthsSince >= 2) {
-                                            $dateColorClass = 'text-gray-500 dark:text-gray-400 font-medium';
-                                        } else {
-                                            $dateColorClass = 'text-gray-500 dark:text-gray-400';
-                                        }
-                                    @endphp
-                                    <div class="text-sm {{ $dateColorClass }} group-hover:dark:text-white">
-                                        {{ $territory->last_completed_at ? $territory->last_completed_at->format('d/m/Y') : 'Nunca' }}
-                                    </div>
-                                    @if ($isAssigned && $activeAssignment->assignedTo)
-                                        <div
-                                            class="mt-1 text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-tight">
-                                            {{ $activeAssignment->assignedTo->name }}
-                                            @if ($activeAssignment->type === 'personal')
-                                                <span
-                                                    class="ml-1 text-[8px] text-amber-600 dark:text-amber-500 font-black">(Personal)</span>
-                                            @endif
-                                        </div>
-                                    @elseif (isset($lastCompletedAssignment) && $lastCompletedAssignment->assignedTo)
-                                        <div
-                                            class="mt-1 text-[10px] text-gray-400 dark:text-gray-500 font-semibold uppercase tracking-tight">
-                                            {{ $lastCompletedAssignment->assignedTo->name }}
-                                            @if ($lastCompletedAssignment->type === 'personal')
-                                                <span
-                                                    class="ml-1 text-[8px] text-amber-600/70 dark:text-amber-500/70 font-black">(Personal)</span>
-                                            @endif
-                                        </div>
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4">
-                                    @php
-                                        $activeAssignment = $territory->assignments->whereNull('completed_at')->first();
-                                        $isAssigned = !is_null($activeAssignment);
-                                    @endphp
-                                    <div class="flex items-center">
-                                        <div
-                                            class="h-2 w-2 rounded-full me-2 {{ $isAssigned ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.4)]' : 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]' }}">
-                                        </div>
-                                        <span
-                                            class="text-sm font-medium {{ $isAssigned ? 'text-red-700 dark:text-red-400' : 'text-green-700 dark:text-green-400' }}">
-                                            {{ $isAssigned ? 'Asignado' : 'Disponible' }}
-                                        </span>
-                                    </div>
+                                <td class="px-6 py-4 text-sm">
+                                    <span
+                                        class="{{ $registro->completed_at ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400' }} font-medium">
+                                        {{ $registro->completed_at ? $registro->completed_at->format('d/m/Y') : 'Pendiente' }}
+                                    </span>
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex justify-end gap-2">
-                                        <a href="{{ route('territories.show', $territory) }}" title="Ver territorio"
-                                            class="inline-flex p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-500 dark:hover:text-gray-300 dark:hover:bg-gray-800 rounded-lg transition-colors">
-                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                            </svg>
-                                        </a>
-                                        <a href="{{ route('territories.edit', $territory) }}" title="Editar territorio"
-                                            class="inline-flex p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 dark:text-blue-400 dark:hover:text-blue-300 dark:hover:bg-blue-500/20 rounded-lg transition-colors">
+                                        <a href="{{ route('admin.registros.edit', $registro) }}"
+                                            class="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-500/20 rounded-lg">
                                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </a>
-                                        <form id="delete-form-desktop-{{ $territory->id }}"
-                                            action="{{ route('territories.destroy', $territory) }}" method="POST"
-                                            class="inline-block">
+                                        <button type="button"
+                                            @click="selectedId = {{ $registro->id }}; $dispatch('open-modal', 'confirm-delete-desktop')"
+                                            class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/20 rounded-lg">
+                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                        <form id="delete-form-desktop-{{ $registro->id }}"
+                                            action="{{ route('admin.registros.destroy', $registro) }}" method="POST"
+                                            class="hidden">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="button"
-                                                @click="selectedId = {{ $territory->id }}; $dispatch('open-modal', 'confirm-delete-desktop')"
-                                                class="inline-flex p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-500/20 rounded-lg transition-colors">
-                                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                            </button>
+                                        </form>
+                                        <form id="delete-form-mobile-{{ $registro->id }}"
+                                            action="{{ route('admin.registros.destroy', $registro) }}" method="POST"
+                                            class="hidden">
+                                            @csrf
+                                            @method('DELETE')
                                         </form>
                                     </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
-                                    No se encontraron territorios registrados.
+                                <td colspan="7" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                                    No hay registros.
                                 </td>
                             </tr>
                         @endforelse
@@ -505,39 +410,110 @@
             </div>
 
             <div class="mt-6">
-                {{ $territories->links() }}
+                {{ $registros->links() }}
             </div>
 
-            <x-modal-confirm name="confirm-delete-mobile" title="Eliminar Territorio"
-                content="¿Estás seguro de eliminar este territorio? Esta acción no se puede deshacer.">
+            <x-modal-confirm name="confirm-delete-mobile" title="Eliminar Registro"
+                content="¿Estás seguro de eliminar este registro? Esto recalculará la última fecha del territorio.">
                 <x-slot name="footer">
-                    <x-secondary-button x-on:click="$dispatch('close')">
-                        Cancelar
-                    </x-secondary-button>
-
+                    <x-secondary-button x-on:click="$dispatch('close')">Cancelar</x-secondary-button>
                     <x-danger-button class="ml-3"
-                        x-on:click="document.getElementById('delete-form-mobile-' + selectedId).submit()">
-                        Sí, eliminar
-                    </x-danger-button>
+                        x-on:click="document.getElementById('delete-form-mobile-' + selectedId).submit()">Sí,
+                        eliminar</x-danger-button>
                 </x-slot>
             </x-modal-confirm>
 
-            <x-modal-confirm name="confirm-delete-desktop" title="Eliminar Territorio"
-                content="¿Estás seguro de eliminar este territorio? Esta acción no se puede deshacer.">
+            <x-modal-confirm name="confirm-delete-desktop" title="Eliminar Registro"
+                content="¿Estás seguro de eliminar este registro? Esto recalculará la última fecha del territorio.">
                 <x-slot name="footer">
-                    <x-secondary-button x-on:click="$dispatch('close')">
-                        Cancelar
-                    </x-secondary-button>
-
+                    <x-secondary-button x-on:click="$dispatch('close')">Cancelar</x-secondary-button>
                     <x-danger-button class="ml-3"
-                        x-on:click="document.getElementById('delete-form-desktop-' + selectedId).submit()">
-                        Sí, eliminar
-                    </x-danger-button>
+                        x-on:click="document.getElementById('delete-form-desktop-' + selectedId).submit()">Sí,
+                        eliminar</x-danger-button>
                 </x-slot>
             </x-modal-confirm>
-
         </div>
     </div>
+
+    <!-- Modal para S-13 -->
+    <x-modal name="s13-export-modal" maxWidth="md">
+        <div class="p-6 sm:p-8">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 leading-tight">
+                Exportar Registro S-13
+            </h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">
+                Seleccione el rango de fechas para generar el reporte de asignaciones de territorios.
+            </p>
+
+            <div class="space-y-5">
+                <div>
+                    <label for="s13_start_date"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Fecha de Inicio</label>
+                    <div class="relative">
+                        <input type="date" id="s13_start_date" name="start_date"
+                            value="{{ \Carbon\Carbon::now()->subYear()->startOfMonth()->format('Y-m-d') }}"
+                            class="block w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors">
+                    </div>
+                </div>
+                <div>
+                    <label for="s13_end_date"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Fecha de Fin</label>
+                    <div class="relative">
+                        <input type="date" id="s13_end_date" name="end_date"
+                            value="{{ \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d') }}"
+                            class="block w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors">
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700 flex flex-col-reverse sm:flex-row justify-end gap-3">
+                <button type="button" x-on:click="$dispatch('close')"
+                    class="w-full sm:w-auto px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors text-center">
+                    Cancelar
+                </button>
+                <button type="button" x-on:click="
+                        const start = document.getElementById('s13_start_date').value;
+                        const end = document.getElementById('s13_end_date').value;
+                        if(start && end) {
+                            window.open('{{ route('export.assignments') }}?start_date=' + start + '&end_date=' + end, '_blank'); 
+                            $dispatch('close');
+                        } else {
+                            alert('Por favor complete ambas fechas.');
+                        }
+                   "
+                    class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2.5 bg-blue-600 border border-transparent rounded-xl font-bold text-sm text-white hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 shadow-sm transition-all gap-2">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
+                    </svg>
+                    Generar PDF
+                </button>
+            </div>
+        </div>
+    </x-modal>
+
+    <!-- Flatpickr for forced Spanish Locale on Date Inputs -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            flatpickr("#s13_start_date", {
+                locale: "es",
+                altInput: true,
+                altFormat: "d/m/Y",
+                dateFormat: "Y-m-d",
+            });
+            flatpickr("#s13_end_date", {
+                locale: "es",
+                altInput: true,
+                altFormat: "d/m/Y",
+                dateFormat: "Y-m-d",
+            });
+        });
+    </script>
     {{-- Modal Importar Backup --}}
     <x-modal name="import-backup-modal" maxWidth="md">
         <div class="p-6 sm:p-8" x-data="{
@@ -547,7 +523,6 @@
             fileReady: false,
             submitting: false,
             handleFile(file) {
-                const validTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'text/csv', 'application/vnd.ms-excel'];
                 const validExtensions = ['.xlsx', '.csv', '.xls'];
                 const ext = '.' + file.name.split('.').pop().toLowerCase();
                 if (!validExtensions.includes(ext)) {
@@ -581,7 +556,8 @@
                 Importar Backup
             </h2>
             <p class="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">
-                Seleccione un archivo de backup previamente exportado para restaurar los territorios y sordos.
+                Seleccione un archivo de backup previamente exportado para restaurar los registros de asignaciones de
+                territorios.
             </p>
 
             {{-- Warning --}}
@@ -593,12 +569,13 @@
                         clip-rule="evenodd" />
                 </svg>
                 <p class="text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
-                    <strong>Nota:</strong> La importación actualizará los territorios existentes (por código) y creará
-                    los nuevos. Los registros que no estén en el archivo no se eliminarán.
+                    <strong>Nota:</strong> La importación actualizará las asignaciones existentes (por territorio,
+                    usuario y fecha) y creará
+                    las nuevas. Los registros que no estén en el archivo no se eliminarán.
                 </p>
             </div>
 
-            <form method="POST" action="{{ route('admin.territories.import') }}" enctype="multipart/form-data"
+            <form method="POST" action="{{ route('admin.registros.import') }}" enctype="multipart/form-data"
                 x-ref="importForm">
                 @csrf
 
@@ -607,7 +584,7 @@
                     @drop.prevent="dragOver = false; if ($event.dataTransfer.files.length) handleFile($event.dataTransfer.files[0])">
 
                     <template x-if="!fileReady">
-                        <label for="import-file-input"
+                        <label for="import-file-input-registros"
                             class="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-2xl cursor-pointer transition-all duration-200"
                             :class="dragOver
                                 ? 'border-blue-400 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-500'
@@ -656,8 +633,9 @@
                         </div>
                     </template>
 
-                    <input type="file" name="file" id="import-file-input" x-ref="fileInput" accept=".xlsx,.csv,.xls"
-                        class="hidden" @change="if ($event.target.files.length) handleFile($event.target.files[0])">
+                    <input type="file" name="file" id="import-file-input-registros" x-ref="fileInput"
+                        accept=".xlsx,.csv,.xls" class="hidden"
+                        @change="if ($event.target.files.length) handleFile($event.target.files[0])">
                 </div>
             </form>
 

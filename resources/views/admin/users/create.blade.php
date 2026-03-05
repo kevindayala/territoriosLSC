@@ -39,6 +39,27 @@
                                 @enderror
                             </div>
 
+                            {{-- Password --}}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="password"
+                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300">Contraseña
+                                        (Opcional)</label>
+                                    <input type="password" name="password" id="password"
+                                        class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                    @error('password')
+                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <label for="password_confirmation"
+                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300">Confirmar
+                                        Contraseña</label>
+                                    <input type="password" name="password_confirmation" id="password_confirmation"
+                                        class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                </div>
+                            </div>
+
                             <div class="bg-blue-50 border-l-4 border-blue-400 p-4">
                                 <div class="flex">
                                     <div class="flex-shrink-0">
@@ -50,8 +71,8 @@
                                     </div>
                                     <div class="ml-3">
                                         <p class="text-sm text-blue-700">
-                                            El usuario recibirá un correo electrónico con un enlace para establecer su
-                                            contraseña.
+                                            Si deja la contraseña en blanco, el usuario recibirá un correo electrónico
+                                            con un enlace para establecerla.
                                         </p>
                                     </div>
                                 </div>

@@ -1,4 +1,5 @@
 <x-app-layout>
+    <x-slot name="logo_url">{{ route('dashboard') }}</x-slot>
     <x-slot name="title">Solicitar Territorio</x-slot>
 
     <div class="py-12 flex items-center justify-center p-4">
@@ -11,14 +12,6 @@
                     <h2 class="text-2xl font-bold text-gray-900 dark:text-white leading-tight pr-4">
                         Solicitar Territorio Personal
                     </h2>
-                    <a href="{{ route('dashboard') }}"
-                        class="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors p-1 -mt-1 -mr-2 flex-shrink-0"
-                        title="Cancelar y volver">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </a>
                 </div>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-8 leading-relaxed">
                     Selecciona un territorio y la fecha estimada en la que planeas devolverlo.
@@ -58,9 +51,10 @@
                             return [
                                 'id' => $t->id,
                                 'code' => $t->code,
-                                'name' => $t->neighborhood_name,
+                                'city_name' => $t->city ? $t->city->name : '',
+                                'name' => $t->neighborhood_name ?? 'Sin barrio',
                                 'type' => $t->type,
-                                'display' => '[' . $t->code . '] ' . $t->neighborhood_name . ($t->city ? ' - ' . $t->city->name : '') . ($t->type === 'business' ? ' (Negocios)' : '')
+                                'display' => $t->code . ($t->city ? ' - ' . $t->city->name : '') . ' - ' . ($t->neighborhood_name ?? 'Sin barrio') . ($t->type === 'business' ? ' (Negocios)' : '')
                             ];
                         })->values()->toJson();
 
@@ -140,7 +134,12 @@
                                         <button type="button" @click="selectOption(territory.id)"
                                             class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center justify-between transition-colors"
                                             :class="{'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 font-medium': selectedId === territory.id, 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700': selectedId !== territory.id}">
-                                            <span x-text="territory.display"></span>
+                                            <div class="flex flex-col">
+                                                <span class="font-bold text-gray-900 dark:text-white"
+                                                    x-text="territory.name + (territory.type === 'business' ? ' (Negocios)' : '')"></span>
+                                                <span class="text-xs text-gray-500 dark:text-gray-400"
+                                                    x-text="territory.code + (territory.city_name ? ' - ' + territory.city_name : '')"></span>
+                                            </div>
                                             <svg x-show="selectedId === territory.id"
                                                 class="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0"
                                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -219,8 +218,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                             </svg>
-                            <span class="sm:hidden">Enviar Solicitud</span>
-                            <span class="hidden sm:inline">Confirmar y Enviar Solicitud</span>
+                            <span>Enviar Solicitud</span>
                         </button>
                         <a href="{{ route('dashboard') }}"
                             class="w-full sm:w-auto text-center px-4 sm:px-5 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors">

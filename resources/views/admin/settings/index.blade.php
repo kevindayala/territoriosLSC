@@ -110,55 +110,11 @@
                     </div>
                 </button>
 
-                {{-- S-13 Registro de Asignaciones --}}
-                <button type="button" @click="$dispatch('open-modal', 's13-export-modal')"
-                    class="group block p-6 bg-white dark:bg-gray-800 overflow-hidden shadow-sm rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 border border-gray-100 dark:border-gray-700 w-full">
-                    <div
-                        class="flex flex-col items-center justify-center space-y-4 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400">
-                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                            </path>
-                        </svg>
-                        <h3 class="text-lg font-bold uppercase tracking-widest text-center">Registro S-13</h3>
-                        <p class="text-sm text-center text-gray-400 dark:text-gray-500 line-clamp-2">Exportar registro
-                            de asignaciones en PDF</p>
-                    </div>
-                </button>
-                {{-- Registro Público Toggle --}}
-                <div
-                    class="group p-6 bg-white dark:bg-gray-800 overflow-hidden shadow-sm rounded-2xl border border-gray-100 dark:border-gray-700 transition-all duration-300">
-                    <div class="flex flex-col items-center justify-center space-y-4">
-                        <div
-                            class="p-4 rounded-2xl {{ $publicRegistration ? 'bg-green-50 text-green-600 dark:bg-green-900/20' : 'bg-red-50 text-red-600 dark:bg-red-900/20' }}">
-                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                            </svg>
-                        </div>
-                        <div class="text-center">
-                            <h3 class="text-lg font-bold uppercase tracking-widest text-gray-700 dark:text-gray-200">
-                                Registro Público</h3>
-                            <div class="mt-1 flex items-center justify-center gap-2">
-                                <span
-                                    class="w-2 h-2 rounded-full {{ $publicRegistration ? 'bg-green-500 animate-pulse' : 'bg-red-500' }}"></span>
-                                <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">
-                                    {{ $publicRegistration ? 'Habilitado' : 'Deshabilitado' }}
-                                </span>
-                            </div>
-                        </div>
 
-                        <form action="{{ route('admin.settings.update') }}" method="POST" class="w-full pt-2">
-                            @csrf
-                            <input type="hidden" name="public_registration"
-                                value="{{ $publicRegistration ? 'false' : 'true' }}">
-                            <button type="submit"
-                                class="w-full py-3 px-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all {{ $publicRegistration ? 'bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-200 dark:shadow-none' : 'bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-200 dark:shadow-none' }}">
-                                {{ $publicRegistration ? 'Deshabilitar' : 'Habilitar' }}
-                            </button>
-                        </form>
-                    </div>
-                </div>
+
+
+
+
             </div>
         </div>
     </div>
@@ -230,83 +186,5 @@
         </form>
     </x-modal>
 
-    <!-- Modal para S-13 -->
-    <x-modal name="s13-export-modal" maxWidth="md">
-        <div class="p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 leading-tight">
-                Exportar Registro S-13
-            </h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">
-                Seleccione el rango de fechas para generar el reporte de asignaciones de territorios.
-            </p>
 
-            <div class="space-y-5">
-                <div>
-                    <label for="s13_start_date"
-                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Fecha de Inicio</label>
-                    <div class="relative">
-                        <input type="date" id="s13_start_date" name="start_date"
-                            value="{{ \Carbon\Carbon::now()->subYear()->startOfMonth()->format('Y-m-d') }}"
-                            class="block w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors">
-                    </div>
-                </div>
-                <div>
-                    <label for="s13_end_date"
-                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Fecha de Fin</label>
-                    <div class="relative">
-                        <input type="date" id="s13_end_date" name="end_date"
-                            value="{{ \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d') }}"
-                            class="block w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors">
-                    </div>
-                </div>
-            </div>
-
-            <div
-                class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700 flex flex-col-reverse sm:flex-row justify-end gap-3">
-                <button type="button" x-on:click="$dispatch('close')"
-                    class="w-full sm:w-auto px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors text-center">
-                    Cancelar
-                </button>
-                <button type="button" x-on:click="
-                        const start = document.getElementById('s13_start_date').value;
-                        const end = document.getElementById('s13_end_date').value;
-                        if(start && end) {
-                            window.open('{{ route('export.assignments') }}?start_date=' + start + '&end_date=' + end, '_blank'); 
-                            $dispatch('close');
-                        } else {
-                            alert('Por favor complete ambas fechas.');
-                        }
-                   "
-                    class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2.5 bg-blue-600 border border-transparent rounded-xl font-bold text-sm text-white hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 shadow-sm transition-all gap-2">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                        </path>
-                    </svg>
-                    Generar PDF
-                </button>
-            </div>
-        </div>
-    </x-modal>
-
-    <!-- Flatpickr for forced Spanish Locale on Date Inputs -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            flatpickr("#s13_start_date", {
-                locale: "es",
-                altInput: true,
-                altFormat: "d/m/Y",
-                dateFormat: "Y-m-d",
-            });
-            flatpickr("#s13_end_date", {
-                locale: "es",
-                altInput: true,
-                altFormat: "d/m/Y",
-                dateFormat: "Y-m-d",
-            });
-        });
-    </script>
 </x-app-layout>

@@ -38,7 +38,7 @@ class AdminPersonalTerritoryController extends Controller
             })
             ->with('city')
             ->get()
-            ->sortBy('code');
+            ->sortBy('code', SORT_NATURAL);
 
         return view('admin.personal-territories.create', compact('users', 'territories'));
     }

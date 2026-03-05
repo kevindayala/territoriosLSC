@@ -5,18 +5,36 @@
     <div class="pt-6 pb-12 md:py-12" x-data="{ selectedId: null }">
         {{-- Título de la página --}}
         <x-slot name="header">
-            <div class="flex justify-between items-center">
-                <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4" x-data="{}">
+                <h2
+                    class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight text-center sm:text-left">
                     {{ __('Usuarios') }}
                 </h2>
-                <a href="{{ route('users.create') }}"
-                    class="inline-flex items-center px-4 h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg shadow-blue-500/20 active:scale-95 transition-all gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
-                    </svg>
-                    <span class="text-sm font-bold hidden sm:inline">Registrar Usuario</span>
-                    <span class="text-sm font-bold sm:hidden">Nuevo</span>
-                </a>
+                <div class="flex items-center flex-wrap sm:flex-nowrap gap-2 w-full sm:w-auto">
+                    <form action="{{ route('users.toggle-registration') }}" method="POST" class="flex-1 sm:flex-none">
+                        @csrf
+                        <button type="submit"
+                            title="{{ $publicRegistration ? 'Click para desactivar' : 'Click para activar' }}"
+                            class="w-full inline-flex items-center justify-center px-3 h-11 sm:h-10 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-full shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all gap-2">
+                            <div
+                                class="w-2 h-2 rounded-full {{ $publicRegistration ? 'bg-green-500 animate-pulse' : 'bg-red-500' }}">
+                            </div>
+                            <span class="text-[13px] sm:text-sm font-bold whitespace-nowrap">
+                                {{ __('Permitir registrarse') }}
+                            </span>
+                        </button>
+                    </form>
+
+                    <a href="{{ route('users.create') }}"
+                        class="flex-1 sm:flex-none inline-flex items-center justify-center px-4 h-11 sm:h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg shadow-blue-500/20 active:scale-95 transition-all gap-2">
+                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
+                        </svg>
+                        <span class="text-[13px] sm:text-sm font-bold whitespace-nowrap hidden sm:inline">Nuevo
+                            Usuario</span>
+                        <span class="text-[13px] sm:text-sm font-bold whitespace-nowrap sm:hidden">Nuevo</span>
+                    </a>
+                </div>
             </div>
         </x-slot>
 

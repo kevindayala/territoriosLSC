@@ -32,4 +32,28 @@ class TerritoryImportExportController extends Controller
             return back()->with('error', 'Error al importar: ' . $e->getMessage() . ' (Línea ' . $e->getLine() . ')');
         }
     }
+
+    public function exportRegistrosBackup()
+    {
+        return Excel::download(new \App\Exports\RegistrosBackupExport, 'backup_registros_' . date('Y_m_d_His') . '.xlsx');
+    }
+
+    public function importRegistros(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,csv,xls|max:5120',
+        ]);
+
+        try {
+            $import = new \App\Imports\RegistrosImport;
+            Excel::import($import, $request->file('file'));
+
+            // Update last_completed_at for all affected territories
+            $import->updateTerritoryDates();
+
+            return back()->with('success', $import->getSummaryMessage());
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al importar registros: ' . $e->getMessage());
+        }
+    }
 }

@@ -35,7 +35,22 @@ class AdminUserController extends Controller
         }
 
         $users = $query->paginate(10);
-        return view('admin.users.index', compact('users'));
+        $publicRegistration = \App\Models\Setting::get('public_registration', 'true') === 'true';
+
+        return view('admin.users.index', compact('users', 'publicRegistration'));
+    }
+
+    public function toggleRegistration()
+    {
+        $current = \App\Models\Setting::get('public_registration', 'true');
+        $new = ($current === 'true') ? 'false' : 'true';
+        \App\Models\Setting::set('public_registration', $new);
+
+        $message = $new === 'true'
+            ? 'El registro público se ha habilitado, cualquier usuario con el enlace se podrá registrar.'
+            : 'El registro público se ha deshabilitado, solo los administradores podrán registrar usuarios.';
+
+        return back()->with('success', $message);
     }
 
     /**
@@ -63,21 +78,31 @@ class AdminUserController extends Controller
                 Rule::unique('users')->whereNull('deleted_at')
             ],
             'role' => ['required', 'exists:roles,name'],
+            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
         ]);
+
+        $password = $request->filled('password')
+            ? Hash::make($request->password)
+            : Hash::make(\Illuminate\Support\Str::random(16));
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make(\Illuminate\Support\Str::random(16)), // Random password
+            'password' => $password,
             'is_active' => true,
         ]);
 
         $user->assignRole($request->role);
 
-        // Send reset link using the Password facade
-        \Illuminate\Support\Facades\Password::sendResetLink($request->only('email'));
+        // If password was NOT manually set, send reset link
+        if (!$request->filled('password')) {
+            \Illuminate\Support\Facades\Password::sendResetLink($request->only('email'));
+            $message = 'Usuario creado. Se ha enviado un correo para configurar la contraseña.';
+        } else {
+            $message = 'Usuario creado exitosamente con la contraseña proporcionada.';
+        }
 
-        return redirect()->route('users.index')->with('success', 'Usuario creado. Se ha enviado un correo para configurar la contraseña.');
+        return redirect()->route('users.index')->with('success', $message);
     }
 
     /**
