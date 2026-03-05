@@ -201,15 +201,6 @@
                                         class="block text-[13px] font-bold text-[#334155] dark:text-gray-400 tracking-wide mb-3">{{ __('Filtrar por') }}</label>
                                     <div class="flex flex-col gap-3.5">
                                         <label class="group flex items-center gap-3 cursor-pointer w-max">
-                                            <input type="checkbox" name="filter[]" value="recommended"
-                                                onchange="this.form.submit()" {{ in_array('recommended', (array) request('filter')) ? 'checked' : '' }}
-                                                class="w-[18px] h-[18px] rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500/30 dark:bg-gray-800 transition-colors cursor-pointer bg-white shadow-sm">
-                                            <span class="text-[15px] text-[#0f172a] dark:text-gray-200 select-none">
-                                                {{ __('Territorios sugeridos') }}
-                                            </span>
-                                        </label>
-
-                                        <label class="group flex items-center gap-3 cursor-pointer w-max">
                                             <input type="checkbox" name="filter[]" value="assigned"
                                                 onchange="this.form.submit()" {{ in_array('assigned', (array) request('filter')) ? 'checked' : '' }}
                                                 class="w-[18px] h-[18px] rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500/30 dark:bg-gray-800 transition-colors cursor-pointer bg-white shadow-sm">

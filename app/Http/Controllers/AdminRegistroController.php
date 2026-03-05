@@ -37,16 +37,6 @@ class AdminRegistroController extends Controller
                             $ssq->whereNull('completed_at');
                         });
                     }
-                    if (in_array('recommended', $filters)) {
-                        $sq->orWhere(function ($ssq) {
-                            $ssq->whereDoesntHave('assignments', function ($ssq2) {
-                                $ssq2->whereNull('completed_at');
-                            })->where(function ($ssq3) {
-                                $ssq3->whereNull('last_completed_at')
-                                    ->orWhere('last_completed_at', '<=', now()->subMonths(6));
-                            });
-                        });
-                    }
                     if (in_array('completed_last_month', $filters)) {
                         $sq->orWhere('last_completed_at', '>=', now()->subMonth());
                     }
