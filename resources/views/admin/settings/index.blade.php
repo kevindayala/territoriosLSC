@@ -94,32 +94,9 @@
                             y rol</p>
                     </div>
                 </a>
-
-                {{-- Importar y Exportar --}}
-                <button type="button" @click="$dispatch('open-modal', 'import-export-modal')"
-                    class="group block p-6 bg-white dark:bg-gray-800 overflow-hidden shadow-sm rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-amber-500 border border-gray-100 dark:border-gray-700 w-full">
-                    <div
-                        class="flex flex-col items-center justify-center space-y-4 text-gray-500 dark:text-gray-400 group-hover:text-amber-600 dark:group-hover:text-amber-400">
-                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
-                        </svg>
-                        <h3 class="text-lg font-bold uppercase tracking-widest text-center">Importar / Exportar</h3>
-                        <p class="text-sm text-center text-gray-400 dark:text-gray-500 line-clamp-2">Sincroniza
-                            territorios y sordos mediante Excel</p>
-                    </div>
-                </button>
-
-
-
-
-
-
             </div>
         </div>
     </div>
-
-    <!-- Modal para Importar/Exportar -->
     <x-modal name="import-export-modal" :show="$errors->has('file')" maxWidth="md">
         <form method="POST" action="{{ route('admin.territories.import') }}" enctype="multipart/form-data" class="p-6">
             @csrf

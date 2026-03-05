@@ -53,6 +53,9 @@ class TerritoryController extends Controller
             }
 
             $topAssignedTerritories = $topAssignedTerritoriesQuery
+                ->when($request->filled('city_id') && $request->city_id !== 'todas', function ($q) use ($request) {
+                    $q->orderByRaw('CASE WHEN territories.city_id = ? THEN 0 ELSE 1 END ASC', [$request->city_id]);
+                })
                 ->orderBy(\App\Models\City::select('name')->whereColumn('cities.id', 'territories.city_id'))
                 ->orderByRaw('LENGTH(territories.code) ASC')
                 ->orderBy('territories.code', 'asc')
@@ -150,8 +153,12 @@ class TerritoryController extends Controller
             });
         }
 
-        // 1. Group by city if "Todas" is active or none is explicitly chosen
-        if (!$request->filled('city_id') || $request->city_id === 'todas') {
+        // 1. Group by city: if a specific city is selected, show parent first then children.
+        //    If "Todas" is active, order alphabetically by city name.
+        if ($request->filled('city_id') && $request->city_id !== 'todas') {
+            $query->orderByRaw('CASE WHEN territories.city_id = ? THEN 0 ELSE 1 END ASC', [$request->city_id]);
+            $query->orderBy(\App\Models\City::select('name')->whereColumn('cities.id', 'territories.city_id'));
+        } else {
             $query->orderBy(\App\Models\City::select('name')->whereColumn('cities.id', 'territories.city_id'));
         }
 

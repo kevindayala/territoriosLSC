@@ -114,6 +114,10 @@ class AdminTerritoryController extends Controller
                 ->orderByRaw('LENGTH(code) ASC')
                 ->orderBy('code', 'ASC');
         } else {
+            // When a specific city is selected, show parent city territories first
+            if ($request->filled('city_id') && $request->city_id !== 'todas') {
+                $query->orderByRaw('CASE WHEN city_id = ? THEN 0 ELSE 1 END ASC', [$request->city_id]);
+            }
             $query->orderByRaw('LEFT(code, 1) ASC')
                 ->orderByRaw('LENGTH(code) ASC')
                 ->orderBy('code', 'ASC');

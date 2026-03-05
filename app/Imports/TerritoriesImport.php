@@ -53,7 +53,11 @@ class TerritoriesImport implements ToModel, WithHeadingRow
 
         // Detectar indicadores de Mojibake (doble codificación UTF-8)
         // Ejemplo: "Ã±" debería ser "ñ", "Ã¡" debería ser "á"
-        $mojibakeIndicators = ['Ã¡', 'Ã©', 'Ã­', 'Ã³', 'Ãº', 'Ã±', 'Ã', 'Ã‰', 'Ã', 'Ã"', 'Ãš', 'Ã'', 'Â¿', 'Â¡', 'Â°'];
+        // Solo se necesitan algunos patrones comunes: si cualquiera se detecta,
+        // se aplica la corrección a toda la cadena completa.
+        // Nota: Los indicadores de mayúsculas (Á,É,Í,Ó,Ú,Ñ) se omiten porque
+        // sus bytes Win-1252 producen comillas tipográficas que rompen la sintaxis PHP.
+        $mojibakeIndicators = ['Ã¡', 'Ã©', 'Ã³', 'Ãº', 'Ã±', 'Â¿', 'Â¡'];
 
         foreach ($mojibakeIndicators as $indicator) {
             if (strpos($text, $indicator) !== false) {
