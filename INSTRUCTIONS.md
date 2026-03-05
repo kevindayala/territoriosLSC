@@ -159,6 +159,124 @@ Dependiendo de tu servidor, es recomendable asegurarse de que el sistema tenga p
 
 ---
 
+## 9. Despliegue usando Git via SSH o Terminal (Recomendado)
+
+Si tu servidor (VPS o Hosting compartido como cPanel, Hostinger, etc.) tiene acceso a la "Terminal" o "SSH", y lo tiene instalado, este es el método más rápido y profesional. En lugar de subir pesados archivos `.zip`, enlazaremos el servidor directamente con tu repositorio de GitHub. 
+
+Como el repositorio es **público**, el proceso es extremadamente sencillo y no requiere configuraciones complejas de llaves.
+
+---
+
+### FASE 1: La Primera Instalación
+
+1. En la terminal de tu servidor, sitúate en tu carpeta principal (un nivel antes de `public_html`, para que tu código fuente nunca sea público):
+   ```bash
+   cd /home/tu_usuario/
+   ```
+2. **Clona el repositorio** directamente desde GitHub usando su link HTTP (ya que es público):
+   ```bash
+   git clone https://github.com/kevindayala/territoriosLSC.git app-territorios
+   cd app-territorios
+   ```
+3. **Instala el núcleo de PHP / Laravel** (Usamos flags de velocidad e ignoramos librerías de testeo para ahorrar espacio):
+   ```bash
+   composer install --optimize-autoloader --no-dev
+   ```
+   *(Si te sale un error de que falta RAM, intenta usar este comando en su lugar: `COMPOSER_MEMORY_LIMIT=-1 composer install --optimize-autoloader --no-dev`)*.
+4. **Instala y compila el Frontend:**
+   ```bash
+   npm install
+   npm run build
+   ```
+   *(Nota: Si  tu hosting compartido es muy limitado y no deja correr `npm`, compila en tu ordenador local ejecutando `npm run build` y luego simplemente sube la carpeta `public/build` usando el Administrador de Archivos de tu Hosting).*
+5. **Configura tu archivo de variables de entorno (.env):**
+   Copia nuestro molde inicial:
+   ```bash
+   cp .env.example .env
+   ```
+   Usa el administrador de archivos del Hosting para editar el `.env` (o usa la terminal con `nano .env`) y cambia esto por los datos de producción:
+   ```env
+   APP_ENV=production
+   APP_DEBUG=false
+   APP_URL=https://tudominio.com
+
+   # Asegúrate de poner aquí los datos correctos de la DB que creaste en tu panel de control
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=nombre_de_bd
+   DB_USERNAME=usuario_bd
+   DB_PASSWORD=clave_bd
+   ```
+6. **Levanta la estructura de la aplicación y enlázala:**
+   ```bash
+   php artisan key:generate
+   php artisan migrate --force
+   php artisan storage:link
+   ```
+   *(Nota: El `--force` sirve para que la terminal no se detenga preguntando si estás seguro).*
+7. **Modo Turbo (Caché final):**
+   ```bash
+   php artisan optimize
+   ```
+
+*(⚠️ **¡OJO!**: No olvides modificar el Directorio Raíz o Document Root de tu dominio desde el panel de control del hosting para que apunte a `/app-territorios/public` tal como se explicó en los pasos clásicos).*
+
+---
+
+### FASE 3: ¿Cómo actualizar futuros cambios en segundos? (La Magia)
+
+Este es el mayor beneficio de usar Git. Cuando programes nuevas cosas, corrijas bugs o cambies el diseño en tu ordenador local, harás tu flujo normal de Git para subirlo a la nube (`git add .`, `git commit -m "nuevos cambios"`, `git push`). 
+
+**Ya NO necesitas usar archivos ZIP jamás.** Para que los visitantes vean lo nuevo, solo entra por terminal a tu servidor y corre esto:
+
+```bash
+# 1. Entrar a la carpeta del proyecto
+cd /home/tu_usuario/app-territorios
+
+# 2. Bajar los nuevos cambios desde GitHub (Literalmente tarda 1 segundo)
+git pull origin main
+
+# 3. Solo si agregaste paquetes de Composer/NPM o creaste nuevas Bases de Datos (migraciones) en tu PC:
+composer install --no-dev --optimize-autoloader
+npm install && npm run build
+php artisan migrate --force
+
+# 4. Limpiar la memoria escondida del servidor para forzarle a mostrar lo nuevo (¡Súper Importante!)
+php artisan optimize:clear
+php artisan optimize
+```
+
+**💡 Pro-Tip para perezosos (Opcional):**
+1. Crea un archivo en la raíz del proyecto llamado `deploy.sh`
+2. Pon todos los comandos de arriba dentro del archivo.
+3. Así, la próxima vez que hagas un cambio, en tu servidor solo tendrás que escribir: `sh deploy.sh` y tu app se actualizará sola de principio a fin.
+
+---
+
+### FASE 3: Permisos y Solución de Problemas con Imágenes / Fotos de Perfil
+
+Al mover un proyecto construido en un computador a un servidor en internet, es muy común que las imágenes recién subidas o las fotos de perfil no se vean y aparezcan "rotas" (ej: iconos en blanco). 
+
+Si esto te ocurre, debes asegurarte de ejecutar estos comandos en la terminal de tu servidor estando en la carpeta de tu proyecto (`cd /home/tu_usuario/app-territorios`):
+
+1. **Re-crear los enlaces simbólicos (Imágenes públicas):**
+   Las imágenes se guardan seguros en `storage`, y este comando crea un "túnel" para que la carpeta `public` pueda verlas.
+   ```bash
+   php artisan storage:link
+   ```
+   *(Si el terminal te dice que el enlace ya existe pero las fotos aún no se ven, bórralo y vuelve a crearlo ejecutando: `rm -rf public/storage` y luego de nuevo `php artisan storage:link`)*.
+
+2. **Ajustar Permisos de Carpetas Críticas:**
+   Tu servidor necesita "permisos de escritura" para guardar nuevas fotos de perfil, nuevas migraciones, subir cachés, etc. Corre esto en la terminal:
+   ```bash
+   chmod -R 775 storage
+   chmod -R 775 bootstrap/cache
+   ```
+   *(Adicionalmente, si el dueño de los archivos quedó mal asignado por el servidor, podrías requerir contactar a soporte de tu hosting para que apliquen un comando `chown` a tus carpetas)*.
+
+---
+
 **✨ Nota sobre Tareas Programadas (Crons):**  
 A diferencia de aplicaciones Laravel tradicionales, **este proyecto NO requiere que configures tareas programadas (Crons) en tu servidor** para el cierre automático de territorios. Hemos implementado un sistema "Auto-Pilot" mediante un Middleware. Mientras el sistema reciba tráfico o se esté usando, él mismo revisará y completará de manera silenciosa las asignaciones que tengan más de 6 horas usando la caché para no impactar el rendimiento del servidor. No tienes que hacer nada más.
 
