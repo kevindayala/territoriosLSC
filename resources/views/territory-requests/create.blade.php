@@ -74,8 +74,9 @@
                             selectedId: {{ $oldTerritoryId ? $oldTerritoryId : 'null' }},
                             get filteredTerritories() {
                                 if (this.search === '') return []; // No mostrar nada si no hay búsqueda
+                                let searchClean = this.search.toLowerCase().replace(/\s/g, '');
                                 return this.territories.filter(t => 
-                                    t.code.toLowerCase().includes(this.search.toLowerCase()) || 
+                                    t.code.toLowerCase().replace(/\s/g, '').includes(searchClean) || 
                                     t.name.toLowerCase().includes(this.search.toLowerCase())
                                 );
                             },

@@ -54,12 +54,17 @@
     <a href="{{ route('territories.show', $territory) }}"
         class="group flex flex-col flex-1 bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 relative active:scale-[0.99] {{ $priorityClass }}">
 
-        <!-- 1) Header row -->
-        <div class="flex justify-between items-start gap-3 mb-2">
-            <h3 class="text-lg font-bold text-gray-900 dark:text-white leading-tight pt-0.5 break-words"
-                style="word-break: break-word;">
-                {{ $territory->neighborhood_name }}
-            </h3>
+        <!-- 1) Header & Subtitle combined -->
+        <div class="flex justify-between items-start gap-3 mb-4">
+            <div class="flex flex-col">
+                <span class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                    {{ $territory->code }} - {{ $territory->city->name }}
+                </span>
+                <h3 class="text-[17px] font-black text-gray-900 dark:text-white leading-tight break-words uppercase"
+                    style="word-break: break-word;">
+                    {{ $territory->neighborhood_name }}
+                </h3>
+            </div>
 
             @if ($isAssigned)
                 @php
@@ -70,7 +75,7 @@
                 @endphp
                 @if($isPersonal)
                     <span
-                        class="inline-flex items-center justify-center flex-shrink-0 px-3 py-1 text-xs font-normal tracking-wider text-amber-700 bg-amber-100 rounded-full dark:bg-amber-500/30 dark:text-amber-200 border border-amber-200 dark:border-amber-400/60 shadow-sm whitespace-nowrap">
+                        class="inline-flex items-center justify-center flex-shrink-0 px-3 py-1 text-xs font-normal tracking-wider text-amber-700 bg-amber-100 rounded-full dark:bg-amber-500/30 dark:text-amber-200 border border-amber-200 dark:border-amber-400/60 shadow-sm whitespace-nowrap mt-1">
                         @if(auth()->check() && auth()->user()->hasRole('admin') && $assignedTo)
                             <span title="{{ $assignedTo }}"><span class="font-bold">Territorio:</span>
                                 {{ explode(' ', $assignedTo)[0] }}</span>
@@ -80,17 +85,12 @@
                     </span>
                 @else
                     <span
-                        class="inline-flex items-center flex-shrink-0 px-3 py-1 rounded-full text-xs font-normal dark:bg-blue-900/30 dark:text-blue-400 whitespace-nowrap"
+                        class="inline-flex items-center flex-shrink-0 px-3 py-1 rounded-full text-xs font-normal dark:bg-blue-900/30 dark:text-blue-400 whitespace-nowrap mt-1"
                         style="background-color: #eff6ff; color: #1d4ed8;">
                         <span class="font-bold">{{ __('Capitán:') }}</span>&nbsp;{{ $assignedBy }}
                     </span>
                 @endif
             @endif
-        </div>
-
-        <!-- 2) Subtitle row -->
-        <div class="text-[13px] text-gray-500 dark:text-gray-400 mb-4">
-            {{ $territory->code }} &middot; {{ $territory->city->name }}
         </div>
         <!-- 3) Metrics row -->
         <div class="flex flex-col gap-1.5 text-[13px] text-gray-600 dark:text-gray-300 mb-4">

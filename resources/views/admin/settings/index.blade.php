@@ -199,17 +199,21 @@
                     Excel lleno con la información de los territorios y personas.</p>
             </div>
 
-            <div class="mb-6">
+            <div class="mb-6" x-data="{ fileName: '' }">
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="file_upload_alt">
                     Archivo Excel a Importar (.xlsx, .csv)
                 </label>
-                <input type="file" name="file" id="file_upload_alt" accept=".xlsx,.csv,.xls" required class="block w-full text-sm text-gray-500 dark:text-gray-400
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded-full file:border-0
-                    file:text-sm file:font-semibold
-                    file:bg-amber-50 file:text-amber-700
-                    dark:file:bg-amber-900/40 dark:file:text-amber-400
-                    hover:file:bg-amber-100 dark:hover:file:bg-amber-900/60 transition-all">
+                <div class="flex items-center space-x-4">
+                    <label
+                        class="cursor-pointer inline-flex items-center px-4 py-2 bg-amber-50 dark:bg-amber-900/40 border border-transparent rounded-full font-semibold text-sm text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/60 transition-all">
+                        Elegir archivo
+                        <input type="file" name="file" id="file_upload_alt" accept=".xlsx,.csv,.xls" required
+                            class="hidden"
+                            @change="fileName = $event.target.files[0] ? $event.target.files[0].name : ''">
+                    </label>
+                    <span class="text-sm text-gray-500 dark:text-gray-400"
+                        x-text="fileName ? fileName : 'Ningún archivo seleccionado'"></span>
+                </div>
                 @error('file')
                     <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                 @enderror

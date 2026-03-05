@@ -46,7 +46,24 @@ Crea la base de datos en tu servidor MySQL primero, luego ejecuta:
 php artisan migrate --seed
 ```
 
-## 7. Iniciar el servidor local
+### 🔐 Credenciales por defecto (Admin)
+Una vez ejecutado el "seed", utiliza estos datos para tu primer inicio de sesión:
+*   **Usuario:** `admin@lsc.com`
+*   **Contraseña:** `secret123`
+
+---
+
+## 7. ¿Cómo reiniciar el sistema (Formatear)?
+Si en algún momento quieres borrar todos los datos y empezar de cero (limpiar territorios, personas y registros), usa este comando en tu terminal:
+
+```bash
+php artisan migrate:fresh --seed
+```
+**⚠️ ¡PELIGRO!:** Este comando borrará TODA tu información y volverá a crear el usuario administrador por defecto mencionado arriba.
+
+---
+
+## 8. Iniciar el servidor local
 Si usas Laragon o XAMPP, simplemente accede a la URL que te proporciona el panel. Si quieres usar el servidor interno de Laravel:
 ```bash
 php artisan serve
@@ -149,4 +166,5 @@ A diferencia de aplicaciones Laravel tradicionales, **este proyecto NO requiere 
 
 ### Notas adicionales:
 - **Base de Datos:** Los registros actuales (personas, territorios, etc.) no están en GitHub. Si necesitas los datos reales de la otra PC, debes exportar la base de datos (SQL Dump) e importarla en la nueva.
+- **Plantilla Excel:** El sistema soporta jerarquías de ciudades. En el Excel, usa la columna **'Nombre de Ciudad'** para la ciudad principal y **'Localidad (Opcional)'** para la zona o sector (ej. Ciudad: Bucaramanga, Localidad: Norte).
 - **Vite:** Durante el desarrollo, si haces cambios en el CSS o JS, recuerda ejecutar `npm run dev`. Para producción usa `npm run build`.

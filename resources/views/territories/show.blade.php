@@ -2,16 +2,17 @@
     <x-slot name="title">{{ $territory->neighborhood_name }}</x-slot>
     <x-slot name="logo_url">{{ route('territories.index') }}</x-slot>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <div class="flex flex-col">
-                <span class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+        <div class="flex justify-between items-start gap-4">
+            <div class="flex flex-col flex-1 min-w-0">
+                <span class="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                     {{ $territory->code }} - {{ $territory->city->name }}
                 </span>
-                <h2 class="font-black text-3xl text-gray-900 dark:text-white leading-tight">
+                <h2
+                    class="font-black text-2xl sm:text-3xl text-gray-900 dark:text-white leading-tight mt-1 break-words">
                     {{ $territory->neighborhood_name }}
                 </h2>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 flex-shrink-0 mt-2 sm:mt-1">
 
                 @if($currentAssignment)
                     <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300">

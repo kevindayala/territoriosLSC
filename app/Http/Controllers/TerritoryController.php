@@ -142,8 +142,10 @@ class TerritoryController extends Controller
         // Search logic
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('territories.code', 'like', "%{$search}%")
+            $searchWithoutSpaces = str_replace(' ', '', $search);
+
+            $query->where(function ($q) use ($search, $searchWithoutSpaces) {
+                $q->whereRaw("REPLACE(territories.code, ' ', '') LIKE ?", ["%{$searchWithoutSpaces}%"])
                     ->orWhere('territories.neighborhood_name', 'like', "%{$search}%");
             });
         }

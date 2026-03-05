@@ -79,8 +79,10 @@ class AdminTerritoryController extends Controller
         // Basic Search for Admin
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('code', 'like', "%{$search}%")
+            $searchWithoutSpaces = str_replace(' ', '', $search);
+
+            $query->where(function ($q) use ($search, $searchWithoutSpaces) {
+                $q->whereRaw("REPLACE(code, ' ', '') LIKE ?", ["%{$searchWithoutSpaces}%"])
                     ->orWhere('neighborhood_name', 'like', "%{$search}%")
                     ->orWhereHas('city', function ($cq) use ($search) {
                         $cq->where('name', 'like', "%{$search}%");

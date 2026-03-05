@@ -12,8 +12,8 @@ class TerritoriesTemplateExport implements FromArray, WithHeadings, WithStyles
     public function array(): array
     {
         return [
-            // Fila de ejemplo opcional (Usa Ciudad > Subcategoría para sub-zonas, ej: Bucaramanga > Norte)
-            ['TERR-001', 'Bucaramanga > Norte', 'Centro', 'Activo', 'Notas de territorio', 'Juan Perez', 'Calle Falsa 123', 'https://maps.google.com/?q=...', 'Sordo usa LSC', 'Activo'],
+            // Fila de ejemplo opcional
+            ['TERR-001', 'Bucaramanga', 'Norte', 'Centro', 'Activo', 'Notas de territorio', 'Juan Perez', 'Calle Falsa 123', 'https://maps.google.com/?q=...', 'Sordo usa LSC', 'Activo'],
         ];
     }
 
@@ -22,6 +22,7 @@ class TerritoriesTemplateExport implements FromArray, WithHeadings, WithStyles
         return [
             'Codigo (Territorio)',
             'Nombre de Ciudad',
+            'Localidad (Opcional)',
             'Nombre de Barrio',
             'Estado Territorio',
             'Notas Territorio',

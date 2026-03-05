@@ -51,17 +51,33 @@ class TerritoriesImport implements ToModel, WithHeadingRow
 
         // 1. Encontrar o crear la ciudad
         $cityNameRaw = trim($this->fixEncoding($row['nombre_de_ciudad'] ?? $row['ciudad'] ?? ''));
+        $localityRaw = trim($this->fixEncoding($row['localidad_opcional'] ?? $row['localidad'] ?? ''));
+
         if (empty($cityNameRaw)) {
             return null; // El territorio necesita ciudad
         }
 
         // Limpiar posible prefijo visual "— " copiado de la interfaz
         $cityNameRaw = preg_replace('/^[—\-\s]+/', '', $cityNameRaw);
+        $localityRaw = preg_replace('/^[—\-\s]+/', '', $localityRaw);
 
         if (strpos($cityNameRaw, '>') !== false) {
             $parts = explode('>', $cityNameRaw);
             $parentName = mb_substr(trim($parts[0]), 0, 255);
             $childName = mb_substr(trim($parts[1]), 0, 255);
+
+            $parentCity = City::firstOrCreate(
+                ['name' => $parentName],
+                ['slug' => Str::slug($parentName), 'is_active' => true]
+            );
+
+            $city = City::firstOrCreate(
+                ['name' => $childName, 'parent_id' => $parentCity->id],
+                ['slug' => Str::slug($childName), 'is_active' => true]
+            );
+        } elseif (!empty($localityRaw)) {
+            $parentName = mb_substr($cityNameRaw, 0, 255);
+            $childName = mb_substr($localityRaw, 0, 255);
 
             $parentCity = City::firstOrCreate(
                 ['name' => $parentName],
