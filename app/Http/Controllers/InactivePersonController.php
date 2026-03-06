@@ -30,7 +30,9 @@ class InactivePersonController extends Controller
         }
 
         $persons = $query->with(['territory.city'])->latest()->paginate(10);
-        $territories = Territory::all();
+        $territories = Territory::orderByRaw('LENGTH(code) ASC')
+            ->orderBy('code', 'asc')
+            ->get();
         $cities = City::hierarchical()->get();
 
         return view('persons.inactive', compact('persons', 'territories', 'cities'));

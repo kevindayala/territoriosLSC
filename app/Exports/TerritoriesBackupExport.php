@@ -41,7 +41,11 @@ class TerritoriesBackupExport implements FromCollection, WithHeadings, WithStyle
      */
     public function collection()
     {
-        $territories = Territory::with(['city', 'persons'])->orderBy('city_id')->orderBy('code')->get();
+        $territories = Territory::with(['city', 'persons'])
+            ->orderBy('city_id')
+            ->orderByRaw('LENGTH(code) ASC')
+            ->orderBy('code', 'asc')
+            ->get();
         $rows = [];
 
         foreach ($territories as $territory) {

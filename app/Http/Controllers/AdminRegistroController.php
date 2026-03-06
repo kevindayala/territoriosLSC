@@ -84,7 +84,9 @@ class AdminRegistroController extends Controller
         // Solo mostrar territorios que NO tienen asignación activa
         $territories = Territory::whereDoesntHave('assignments', function ($q) {
             $q->whereNull('completed_at');
-        })->get()->sortBy('code', SORT_NATURAL);
+        })->orderByRaw('LENGTH(code) ASC')
+            ->orderBy('code', 'asc')
+            ->get();
 
         $users = User::orderBy('name')->get();
         return view('admin.registros.create', compact('territories', 'users'));
@@ -133,7 +135,9 @@ class AdminRegistroController extends Controller
         // En edición mostramos el actual + los disponibles
         $territories = Territory::whereDoesntHave('assignments', function ($q) use ($registro) {
             $q->whereNull('completed_at')->where('id', '!=', $registro->id);
-        })->get()->sortBy('code', SORT_NATURAL);
+        })->orderByRaw('LENGTH(code) ASC')
+            ->orderBy('code', 'asc')
+            ->get();
 
         $users = User::orderBy('name')->get();
         return view('admin.registros.edit', compact('registro', 'territories', 'users'));

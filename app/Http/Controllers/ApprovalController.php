@@ -19,7 +19,9 @@ class ApprovalController extends Controller
             ->latest()
             ->paginate(15, ['*'], 'users_page');
 
-        $territories = \App\Models\Territory::all();
+        $territories = \App\Models\Territory::orderByRaw('LENGTH(code) ASC')
+            ->orderBy('code', 'asc')
+            ->get();
 
         $pendingTerritoryRequests = \App\Models\TerritoryRequest::with(['user', 'territory'])
             ->where('status', 'pending')

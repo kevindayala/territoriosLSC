@@ -38,7 +38,10 @@ class PersonController extends Controller
 
     public function create(Request $request)
     {
-        $territories = Territory::where('status', 'active')->orderBy('code')->get();
+        $territories = Territory::where('status', 'active')
+            ->orderByRaw('LENGTH(code) ASC')
+            ->orderBy('code', 'asc')
+            ->get();
         $cities = \App\Models\City::hierarchical()->where('cities.is_active', true)->get();
 
         $initialTerritory = null;
@@ -86,7 +89,10 @@ class PersonController extends Controller
 
     public function edit(Person $person)
     {
-        $territories = Territory::where('status', 'active')->orderBy('code')->get();
+        $territories = Territory::where('status', 'active')
+            ->orderByRaw('LENGTH(code) ASC')
+            ->orderBy('code', 'asc')
+            ->get();
         $cities = \App\Models\City::hierarchical()->where('cities.is_active', true)->get();
         return view('persons.edit', compact('person', 'territories', 'cities'));
     }

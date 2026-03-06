@@ -37,8 +37,9 @@ class AdminPersonalTerritoryController extends Controller
                 $query->whereNull('completed_at');
             })
             ->with('city')
-            ->get()
-            ->sortBy('code', SORT_NATURAL);
+            ->orderByRaw('LENGTH(code) ASC')
+            ->orderBy('code', 'asc')
+            ->get();
 
         return view('admin.personal-territories.create', compact('users', 'territories'));
     }

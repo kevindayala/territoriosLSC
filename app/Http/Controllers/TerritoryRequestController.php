@@ -14,8 +14,9 @@ class TerritoryRequestController extends Controller
             ->whereDoesntHave('assignments', function ($q) {
                 $q->whereNull('completed_at');
             })
-            ->get()
-            ->sortBy('code', SORT_NATURAL);
+            ->orderByRaw('LENGTH(code) ASC')
+            ->orderBy('code', 'asc')
+            ->get();
 
         return view('territory-requests.create', compact('territories'));
     }
