@@ -57,18 +57,17 @@
         class="group flex flex-col flex-1 bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 relative active:scale-[0.99] {{ $priorityClass }}">
 
         <!-- 1) Header Area -->
-        <div class="mb-5">
+        <div class="mb-4">
             <div class="mb-1">
-                <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">
+                <span class="text-[12px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">
                     {{ $territory->code }} • {{ $territory->city->name }}
                 </span>
             </div>
 
-            <h3 class="text-[28px] font-black text-gray-900 dark:text-white leading-[1] break-words uppercase tracking-tighter mb-2"
+            <h3 class="text-[32px] font-black text-gray-900 dark:text-white leading-[1] break-words uppercase tracking-tighter mb-2"
                 style="word-break: break-word;">
                 {{ $territory->neighborhood_name }}
             </h3>
-
         </div>
         <!-- 3) Metrics row -->
         <div class="flex flex-col gap-1.5 text-[13px] text-gray-600 dark:text-gray-300 mb-4">
