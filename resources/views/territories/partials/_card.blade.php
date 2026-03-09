@@ -8,13 +8,15 @@
     $warningText = '';
 
     if ($isAssigned) {
+        $assignment = $territory->assignments->first();
+        $assignedBy = $assignment && $assignment->assignedBy ? $assignment->assignedBy->short_name : __('Sistema');
         $priority = 5;
         $priorityLabel = __('Territorios asignados');
         $headerColor = 'text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700';
 
         $borderColor = '#d1d5db'; // gray-300
         $warningType = 'gray';
-        $warningText = __('Este territorio esta asignado.');
+        $warningText = '<span class="font-bold">' . __('Capitán: ') . '</span>' . $assignedBy;
     } elseif (!$territory->last_completed_at) {
         $priority = 1;
         $priorityLabel = __('Nunca realizados');
@@ -54,43 +56,19 @@
     <a href="{{ route('territories.show', $territory) }}"
         class="group flex flex-col flex-1 bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 relative active:scale-[0.99] {{ $priorityClass }}">
 
-        <!-- 1) Header & Subtitle combined -->
-        <div class="flex justify-between items-start gap-3 mb-4">
-            <div class="flex flex-col">
-                <span class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
-                    {{ $territory->code }} - {{ $territory->city->name }}
+        <!-- 1) Header Area -->
+        <div class="mb-5">
+            <div class="mb-1">
+                <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">
+                    {{ $territory->code }} • {{ $territory->city->name }}
                 </span>
-                <h3 class="text-[17px] font-black text-gray-900 dark:text-white leading-tight break-words uppercase"
-                    style="word-break: break-word;">
-                    {{ $territory->neighborhood_name }}
-                </h3>
             </div>
 
-            @if ($isAssigned)
-                @php
-                    $assignment = $territory->assignments->first();
-                    $assignedBy = $assignment && $assignment->assignedBy ? $assignment->assignedBy->short_name : __('Sistema');
-                    $assignedTo = $assignment && $assignment->assignedTo ? $assignment->assignedTo->short_name : null;
-                    $isPersonal = $assignment && $assignment->type === 'personal';
-                @endphp
-                @if($isPersonal)
-                    <span
-                        class="inline-flex items-center justify-center flex-shrink-0 px-3 py-1 text-xs font-normal tracking-wider text-amber-700 bg-amber-100 rounded-full dark:bg-amber-500/30 dark:text-amber-200 border border-amber-200 dark:border-amber-400/60 shadow-sm whitespace-nowrap mt-1">
-                        @if(auth()->check() && auth()->user()->hasRole('admin') && $assignedTo)
-                            <span title="{{ $assignedTo }}"><span class="font-bold">Territorio:</span>
-                                {{ $assignedTo }}</span>
-                        @else
-                            <span><span class="font-bold">Territorio</span> Personal</span>
-                        @endif
-                    </span>
-                @else
-                    <span
-                        class="inline-flex items-center flex-shrink-0 px-3 py-1 rounded-full text-xs font-normal dark:bg-blue-900/30 dark:text-blue-400 whitespace-nowrap mt-1"
-                        style="background-color: #eff6ff; color: #1d4ed8;">
-                        <span class="font-bold">{{ __('Asignado:') }}</span>&nbsp;{{ $assignedTo ?? $assignedBy }}
-                    </span>
-                @endif
-            @endif
+            <h3 class="text-[24px] font-black text-gray-900 dark:text-white leading-[1.1] break-words uppercase tracking-tight mb-4"
+                style="word-break: break-word;">
+                {{ $territory->neighborhood_name }}
+            </h3>
+
         </div>
         <!-- 3) Metrics row -->
         <div class="flex flex-col gap-1.5 text-[13px] text-gray-600 dark:text-gray-300 mb-4">
@@ -183,8 +161,7 @@
                 <svg class="shrink-0" width="18" height="18" style="margin-top: 1px;" fill="none" stroke="currentColor"
                     viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
-                    </path>
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                 </svg>
                 <span class="leading-snug">{!! $warningText !!}</span>
             </div>
