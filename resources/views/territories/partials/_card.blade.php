@@ -59,13 +59,14 @@
         <!-- 1) Header Area -->
         <div class="mb-4">
             <div class="mb-1">
-                <span class="text-[12px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">
+                <span class="font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]"
+                    style="font-size: 11px;">
                     {{ $territory->code }} • {{ $territory->city->name }}
                 </span>
             </div>
 
-            <h3 class="text-[32px] font-black text-gray-900 dark:text-white leading-[1] break-words uppercase tracking-tighter mb-2"
-                style="word-break: break-word;">
+            <h3 class="font-black text-gray-900 dark:text-white leading-[1.2] break-words uppercase tracking-tighter mb-2"
+                style="word-break: break-word; font-size: 20px;">
                 {{ $territory->neighborhood_name }}
             </h3>
         </div>
