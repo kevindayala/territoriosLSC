@@ -89,10 +89,8 @@ class TerritoryController extends Controller
                     'city',
                     'assignments' => function ($q) {
                         $q->whereNull('completed_at')
-                            ->whereDate('assigned_at', now()->toDateString())
-                            ->with('assignedBy')
-                            ->latest('id')
-                            ->limit(1);
+                            ->with(['assignedBy', 'assignedTo'])
+                            ->latest('id');
                     }
                 ]);
 

@@ -69,8 +69,8 @@
             @if ($isAssigned)
                 @php
                     $assignment = $territory->assignments->first();
-                    $assignedBy = $assignment && $assignment->assignedBy ? $assignment->assignedBy->name : __('Sistema');
-                    $assignedTo = $assignment && $assignment->assignedTo ? $assignment->assignedTo->name : null;
+                    $assignedBy = $assignment && $assignment->assignedBy ? $assignment->assignedBy->short_name : __('Sistema');
+                    $assignedTo = $assignment && $assignment->assignedTo ? $assignment->assignedTo->short_name : null;
                     $isPersonal = $assignment && $assignment->type === 'personal';
                 @endphp
                 @if($isPersonal)
@@ -78,7 +78,7 @@
                         class="inline-flex items-center justify-center flex-shrink-0 px-3 py-1 text-xs font-normal tracking-wider text-amber-700 bg-amber-100 rounded-full dark:bg-amber-500/30 dark:text-amber-200 border border-amber-200 dark:border-amber-400/60 shadow-sm whitespace-nowrap mt-1">
                         @if(auth()->check() && auth()->user()->hasRole('admin') && $assignedTo)
                             <span title="{{ $assignedTo }}"><span class="font-bold">Territorio:</span>
-                                {{ explode(' ', $assignedTo)[0] }}</span>
+                                {{ $assignedTo }}</span>
                         @else
                             <span><span class="font-bold">Territorio</span> Personal</span>
                         @endif
@@ -87,7 +87,7 @@
                     <span
                         class="inline-flex items-center flex-shrink-0 px-3 py-1 rounded-full text-xs font-normal dark:bg-blue-900/30 dark:text-blue-400 whitespace-nowrap mt-1"
                         style="background-color: #eff6ff; color: #1d4ed8;">
-                        <span class="font-bold">{{ __('Capitán:') }}</span>&nbsp;{{ $assignedBy }}
+                        <span class="font-bold">{{ __('Asignado:') }}</span>&nbsp;{{ $assignedTo ?? $assignedBy }}
                     </span>
                 @endif
             @endif
